@@ -6,15 +6,6 @@ function World(width, height) {
 	this.timeSpeed = 1.0/60;
 	this.coeffs = {
 		 h: 50				//Particles' distance from each other, at which they start interacting
-		,d_stick: 35		//Distance from wall, at which fluid starts sticking
-		,k_stick: 0.01
-		,k: 0.2
-		,k_near: 0.6
-		,p0: 5
-		,visc_lin: 0.011
-		,visc_qua: 0.003
-		,wall_friction: 0.1	//Wall sideways friction (vx *= wall_friction) (0 - max. friction; 1 - no friction)
-		,wall_normal: 0.9	//Wall bounce energy conservation
 	};
 	this.particles = [];
 	this.bodies = [];
@@ -61,6 +52,7 @@ World.prototype.setGravity = function(gravity) {
 }
 World.prototype.nextStep = function (dt) {
 	dt *= this.timeSpeed;
+	
 	//apply gravity
 	for(var i in this.particles) {
 		var mass = this.particles[i].mass;
@@ -99,8 +91,8 @@ World.prototype.applyDoubleDensityRelaxation = function () {
 	}, this);
 	for(var i = 0; i < this.particles.length; i++) {
 		this.particles[i].setPressure(
-			this.coeffs.k*(this.particles[i].pressure.normal-this.coeffs.p0),
-			this.coeffs.k_near*this.particles[i].pressure.near
+			this.particles[i].coeffs.k*(this.particles[i].pressure.normal-this.particles[i].coeffs.p0),
+			this.particles[i].coeffs.k_near*this.particles[i].pressure.near
 		);
 	}
 	this.grid.forEachPair(function (self, A, B) {
@@ -128,7 +120,10 @@ World.prototype.applyViscosity = function (dt) {
 			var uy = A.velocity.y - B.velocity.y;
 			var u = Math.sqrt(ux*ux+uy*uy);
 			
-			var I = (1-q)*(self.coeffs.visc_lin*u+self.coeffs.visc_qua*u*u);
+			var visc_lin = A.coeffs.visc_lin * B.coeffs.visc_lin;
+			var visc_qua = A.coeffs.visc_qua * B.coeffs.visc_qua;
+			
+			var I = (1-q)*(visc_lin*u+visc_qua*u*u);
 			var Ix = (ux/u)*I;
 			var Iy = (uy/u)*I;
 			//*
@@ -154,33 +149,34 @@ World.prototype.applyViscosity = function (dt) {
 World.prototype.applyCollisionsHandling = function () {
 	const extractDistance = 0.001;
 	for(var i = 0; i < this.particles.length; i++) {
+		
 		var r = this.height - this.particles[i].coords.y;
-		if(r < this.coeffs.d_stick) {
-			var F_stick = this.coeffs.k_stick * r * (1 - (r / this.coeffs.d_stick));
+		if(r <  this.particles[i].coeffs.d_stick) {
+			var F_stick =  this.particles[i].coeffs.k_stick * r * (1 - (r /  this.particles[i].coeffs.d_stick));
 			this.particles[i].applyForce(0, F_stick);
 			if(r < 0) {
-				this.particles[i].multipleForcesBy(this.coeffs.wall_friction, -this.coeffs.wall_normal);
-				this.particles[i].multipleVelocityBy(this.coeffs.wall_friction, -this.coeffs.wall_normal);
+				this.particles[i].multipleForcesBy(this.particles[i].coeffs.wall_friction, -this.particles[i].coeffs.wall_normal);
+				this.particles[i].multipleVelocityBy(this.particles[i].coeffs.wall_friction, -this.particles[i].coeffs.wall_normal);
 				this.particles[i].setCoords(this.particles[i].coords.x, this.height - extractDistance);
 			}
 		}
 		var r = this.width - this.particles[i].coords.x;
-		if(r < this.coeffs.d_stick) {
-			var F_stick = this.coeffs.k_stick * r * (1 - (r / this.coeffs.d_stick));
+		if(r < this.particles[i].coeffs.d_stick) {
+			var F_stick = this.particles[i].coeffs.k_stick * r * (1 - (r / this.particles[i].coeffs.d_stick));
 			this.particles[i].applyForce(F_stick, 0);
 			if(r < 0) {
-				this.particles[i].multipleForcesBy(-this.coeffs.wall_normal, this.coeffs.wall_friction);
-				this.particles[i].multipleVelocityBy(-this.coeffs.wall_normal, this.coeffs.wall_friction);
+				this.particles[i].multipleForcesBy(-this.particles[i].coeffs.wall_normal, this.particles[i].coeffs.wall_friction);
+				this.particles[i].multipleVelocityBy(-this.particles[i].coeffs.wall_normal, this.particles[i].coeffs.wall_friction);
 				this.particles[i].setCoords(this.width - extractDistance, this.particles[i].coords.y);
 			}
 		}
 		var r = this.particles[i].coords.x;
-		if(r < this.coeffs.d_stick) {
-			var F_stick = this.coeffs.k_stick * r * (1 - (r / this.coeffs.d_stick));
+		if(r < this.particles[i].coeffs.d_stick) {
+			var F_stick = this.particles[i].coeffs.k_stick * r * (1 - (r / this.particles[i].coeffs.d_stick));
 			this.particles[i].applyForce(-F_stick, 0);
 			if(r < 0) {
-				this.particles[i].multipleForcesBy(-this.coeffs.wall_normal, this.coeffs.wall_friction);
-				this.particles[i].multipleVelocityBy(-this.coeffs.wall_normal, this.coeffs.wall_friction);
+				this.particles[i].multipleForcesBy(-this.particles[i].coeffs.wall_normal, this.particles[i].coeffs.wall_friction);
+				this.particles[i].multipleVelocityBy(-this.particles[i].coeffs.wall_normal, this.particles[i].coeffs.wall_friction);
 				this.particles[i].setCoords(extractDistance, this.particles[i].coords.y);
 			}
 		}
@@ -195,6 +191,7 @@ World.prototype.render = function (ctx) {
 	for(var i = 0; i < this.particles.length; i++) {
 		this.particles[i].render(ctx);
 	}
+	ctx.fillStyle="rgb(70, 70, 255)";
 	for(var i = 0; i < this.bodies.length; i++) {
 		this.bodies[i].render(ctx);
 	}
@@ -209,7 +206,7 @@ World.prototype.render2 = function (ctx) {
 			neighbors[0].render(ctx);
 		}
 		else {
-			var convexHull = this.getConvexHull(neighbors);
+			var convexHull = World.getConvexHull(neighbors);
 			ctx.beginPath();
 			ctx.moveTo(convexHull[0].coords.x, convexHull[0].coords.y);
 			for(var j = 1; j < convexHull.length; j++)
@@ -219,7 +216,7 @@ World.prototype.render2 = function (ctx) {
 		}
 	}
 }
-World.prototype.getConvexHull = function (particles) {
+World.getConvexHull = function (particles) {
 	var convexHull = [];
 	var maxIndex = 0;
 	var maxX = particles[0].coords.x;

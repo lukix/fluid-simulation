@@ -108,6 +108,9 @@ var W=(function () {
 			}
 		});
 	}
+	$('form#coeffs').submit(function () {
+		return false;
+	});
 	$('#rainButton').click(function () {
 		if(rainClock == null)
 			rainClock = setInterval(rainGenerator, 100);

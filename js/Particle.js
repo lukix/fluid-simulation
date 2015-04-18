@@ -16,9 +16,19 @@ function Particle(x, y) {
 }
 Particle.prototype.init = function () {
 	this.velocity = {x: 0.0, y: 0.0};
-	this.radius = 2;
 	this.forces = {x: 0.0, y: 0.0};
 	this.pressure = {normal: 0, near: 0};
+	this.coeffs = {
+		 k: 0.2
+		,k_near: 0.6
+		,p0: 5
+		,visc_lin: 0.105
+		,visc_qua: 0.055
+		,d_stick: 35		//Distance from wall, at which fluid starts sticking
+		,k_stick: 0.01
+		,wall_friction: 0.1	//Wall sideways friction (vx *= wall_friction) (0 - max. friction; 1 - no friction)
+		,wall_normal: 0.9	//Wall bounce energy conservation
+	};
 	return this;
 }
 Particle.prototype.setCoords = function (x, y) {
@@ -47,21 +57,6 @@ Particle.prototype.multipleVelocityBy = function (mvx, mvy) {
 	return this;
 }
 Particle.prototype.render = function (ctx) {
-	/*
-	var r = this.pressure.near*40.15;
-	if(r>255)
-		r = 255;
-	r = Math.round(r);
-	ctx.fillStyle="rgb("+r+", 70, "+(255-r)+")";
-	*/
-	//ctx.fillStyle="rgb(70, 70, 255)";
-	/*
-	ctx.beginPath();
-	ctx.arc(Math.round(this.coords.x), Math.round(this.coords.y), this.radius, 0, Math.PI*2, true);
-	//ctx.arc(this.coords.x, this.coords.y, this.radius, 0, Math.PI*2, true);
-	ctx.closePath();
-	ctx.fill();
-	*/
 	ctx.fillStyle = this.color;
 	ctx.fillRect(this.coords.x, this.coords.y, 4, 4);
 	return this;
