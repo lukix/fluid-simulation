@@ -1,0 +1,58 @@
+html, body {
+	padding: 0;
+	margin: 0;
+	width: 100%;
+	height: 100%;
+}
+#canvas {
+	width: 100%;
+	height: 100%;
+	background-color: black;
+	display: block;
+}
+#infoBox {
+	position: absolute;
+	top: 0px;
+	right: 0px;
+	width: 150px;
+	background-color: rgba(255, 255, 255, 0.2);
+	color: white;
+	padding: 10px;
+	font-family: monospace;
+}
+#fps {
+	font-size: 18px;
+}
+#show {
+	margin-bottom: 5px;
+}
+input[type=button] {
+	width: 100%;
+	height: 25px;
+	background-color: rgba(0, 0, 0, 0.5);
+	color: white;
+	font-size: 16px;
+	outline: none;
+	border: none;
+	cursor: pointer;
+	margin-top: 5px;
+}
+input[type=button]:hover {
+	background-color: rgba(0, 0, 0, 0.3);
+}
+input[type=button]:active {
+	background-color: rgba(0, 0, 0, 0.6);
+}
+form#coeffs {
+	margin-top: 10px;
+}
+form#coeffs input[type=number] {
+	margin-bottom: 2px;
+	margin-right: 5px;
+	border: none;
+	width: 50px;
+}
+.validateError {
+	color: red;
+	background-color: #f99;
+}

@@ -1,0 +1,29 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<link rel="stylesheet" href="css/style.css" />
+		<title>Fluid Simulation</title>
+	</head>
+	<body><canvas id="canvas" width="1000" height="500">Brak obsługi Canvas</canvas>
+		<div id="infoBox">
+			<input type="button" id="show" value="Show/Hide" />
+			<div id="rest">
+				<span id="fps"></span>
+				<input type="button" id="gravityChangerButton" value="Change gravity"/>
+				<input type="button" id="tiltButton" value="Tilt"/>
+				<input type="button" id="rainButton" value="Toggle rain"/>
+				<br />
+				<form id="coeffs">
+					<!-- Dynamically created content -->
+				<form>
+			</div>
+		</div>
+		<script src="js/World.js"></script>
+		<script src="js/Particle.js"></script>
+		<script src="js/Grid.js"></script>
+		<script src="js/Body.js"></script>
+		<script src="js/jquery-1.11.2.min.js"></script>
+		<script src="js/main.js"></script>
+	</body>
+</html>
