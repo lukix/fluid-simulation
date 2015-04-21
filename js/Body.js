@@ -1,5 +1,7 @@
 function Body(coords, verticles) {
-	this.coords = {x: coords.x, y: coords.x};
+	this.coords = {x: coords.x, y: coords.x, angle: 0};
+	if(typeof coords.angle !== "undefined")
+		this.coords.angle = coords.angle;
 	this.verticles = JSON.parse(JSON.stringify(verticles));
 }
 Body.prototype.isIn = function(particle) {
@@ -17,6 +19,7 @@ Body.prototype.extractParticle = function (particle) {
 Body.prototype.render = function (ctx) {
 	ctx.save();
 	ctx.translate(this.coords.x, this.coords.y);
+	ctx.rotate(this.coords.angle);
 	ctx.beginPath();
 	ctx.moveTo(this.verticles[0].x, this.verticles[0].y);
 	for(var i = 1; i < this.verticles.length; i++) {

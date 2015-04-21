@@ -5,7 +5,7 @@ function World(width, height) {
 	this.gravity = {x: 0.0, y: 0.5};
 	this.timeSpeed = 1.0/60;
 	this.coeffs = {
-		 h: 50				//Particles' distance from each other, at which they start interacting
+		 h: 40				//Particles' distance from each other, at which they start interacting
 	};
 	this.particles = [];
 	this.bodies = [];

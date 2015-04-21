@@ -18,7 +18,7 @@ var W=(function () {
 	world.addParticlesGrid(PARTICLES_IN_ROW, PARTICLES_NUMBER/PARTICLES_IN_ROW, 900, WaterParticle);
 	
 	world.addBody(new Body(
-		{x: 50, y: 50},
+		{x: 50, y: 50, angle: Math.PI/4},
 		[{x: 25, y: 25}, {x: 25, y: -25}, {x: -25, y: -25}, {x: -25, y: 25}]
 	));
 	initCoeffsControls(world);
