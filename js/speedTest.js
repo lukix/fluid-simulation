@@ -1,4 +1,9 @@
-$(window).load(function () {
+requirejs.config({
+	'paths': {
+		'jquery': ['./lib/jquery-1.11.2.min']
+	}
+});
+require(['jquery', 'World', 'Particle'], function ($, World, Particle) {
 	var res = runSpeedTest();
 	$('#control-box').html(JSON.stringify(res, null, '	'));
 	function runSpeedTest() {
@@ -13,13 +18,13 @@ $(window).load(function () {
 		result['WorldSize'] = width + 'x' + height;
 		result['ParticlesGrid'] = particlesX + 'x' + particlesY + ' (' + (particlesX*particlesY) + ')';
 		//*
-		var world = new World(width, height).addParticlesGrid(particlesX, particlesY);
+		var world = new World(width, height).addParticlesGrid(particlesX, particlesY, 50, Particle);
 		result['nextStep'] = runSingleTest(world.nextStep, world, [dt], measurements);
 		
-		var world = new World(width, height).addParticlesGrid(particlesX, particlesY);
+		var world = new World(width, height).addParticlesGrid(particlesX, particlesY, 50, Particle);
 		result['applyViscosity'] = runSingleTest(world.applyViscosity, world, [dt], measurements);
 		
-		var world = new World(width, height).addParticlesGrid(particlesX, particlesY);
+		var world = new World(width, height).addParticlesGrid(particlesX, particlesY, 50, Particle);
 		result['applyDoubleDensityRelaxation'] = runSingleTest(world.applyDoubleDensityRelaxation, world, [], measurements);
 		//*/
 		/*
@@ -31,7 +36,7 @@ $(window).load(function () {
 		result['render2'] = runSingleTest(world.render2, world, [ctx], measurements);
 		//*/
 		
-		var world = new World(width, height).addParticlesGrid(particlesX, particlesY);
+		var world = new World(width, height).addParticlesGrid(particlesX, particlesY, 50, Particle);
 		var canvas = document.createElement('canvas');
 		canvas.width = width;
 		canvas.height = height;
