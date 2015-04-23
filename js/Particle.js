@@ -12,13 +12,26 @@ define(function () {
 	function Particle(x, y) {
 		this.coords = {x: x, y: y};
 		this.color = "#f00";
-		this.mass = 1.0;
 		this.init();
+		this.coeffs = Particle.coeffs;
 	}
+	Particle.coeffs = {
+		 k: 0.2
+		,k_near: 0.6
+		,p0: 5
+		,visc_lin: 0.105
+		,visc_qua: 0.055
+		,d_stick: 35		//Distance from wall, at which fluid starts sticking
+		,k_stick: 0.01
+		,wall_friction: 0.1	//Wall sideways friction (vx *= wall_friction) (0 - max. friction; 1 - no friction)
+		,wall_normal: 0.9	//Wall bounce energy conservation
+		,mass: 1.0
+	};
 	Particle.prototype.init = function () {
 		this.velocity = {x: 0.0, y: 0.0};
 		this.forces = {x: 0.0, y: 0.0};
 		this.pressure = {normal: 0, near: 0};
+		/*
 		this.coeffs = {
 			 k: 0.2
 			,k_near: 0.6
@@ -29,7 +42,9 @@ define(function () {
 			,k_stick: 0.01
 			,wall_friction: 0.1	//Wall sideways friction (vx *= wall_friction) (0 - max. friction; 1 - no friction)
 			,wall_normal: 0.9	//Wall bounce energy conservation
+			,mass: 1.0
 		};
+		//*/
 		return this;
 	}
 	Particle.prototype.setCoords = function (x, y) {

@@ -56,7 +56,7 @@ define(['Grid'], function (Grid) {
 		
 		//apply gravity
 		for(var i in this.particles) {
-			var mass = this.particles[i].mass;
+			var mass = this.particles[i].coeffs.mass;
 			this.particles[i].clearForces();
 			this.particles[i].applyForce(this.gravity.x*mass, this.gravity.y*mass);
 		}
@@ -69,7 +69,7 @@ define(['Grid'], function (Grid) {
 		//Apply velocity and position change
 		for(var i=0; i<this.particles.length; i++) {
 			var forces = this.particles[i].getForces();
-			var mass = this.particles[i].mass;
+			var mass = this.particles[i].coeffs.mass;
 			this.particles[i].changeVelocityBy(dt*forces.x/mass, dt*forces.y/mass);
 			this.particles[i].clearForces();
 			this.particles[i].changeCoordsBy(dt*this.particles[i].velocity.x, dt*this.particles[i].velocity.y);
