@@ -11,6 +11,9 @@ html, body {
 	background-color: black;
 	display: block;
 }
+#canvas:active {
+	cursor: default;
+}
 #infoBox {
 	position: absolute;
 	top: 0px;

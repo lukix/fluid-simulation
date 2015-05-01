@@ -21,9 +21,9 @@ require(
 		myCanvas.height = $(myCanvas).height();
 		if (!(ctx = myCanvas.getContext('2d')))
 			return false;
-		const zoom = 0.9;
-		ctx.scale(zoom, zoom);
-		var world = new World(myCanvas.width/zoom, myCanvas.height/zoom);
+		const ZOOM = 0.9;
+		ctx.scale(ZOOM, ZOOM);
+		var world = new World(myCanvas.width/ZOOM, myCanvas.height/ZOOM);
 		const PARTICLES_NUMBER = 700;
 		const PARTICLES_IN_ROW = 25;
 		world.addParticlesGrid(PARTICLES_IN_ROW, PARTICLES_NUMBER/PARTICLES_IN_ROW, 200, Particle);
@@ -50,11 +50,11 @@ require(
 			return false;
 		});
 		$('#show').click(function () {
-			$('#rest').toggle();
+			$('#rest').slideToggle();
 		});
 		$('#tiltButton').click(function () {
 			tiltButton(world);
 		});
-		//mouseControls(world);
+		mouseControls(world, ZOOM);
 	}
 );

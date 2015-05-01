@@ -10,6 +10,7 @@ define(['Grid'], function (Grid) {
 		};
 		this.particles = [];
 		this.bodies = [];
+		this.repulsiveForceSources = []; // {coords: {x: number, y: number}, strength: number}
 		this.grid = new Grid(this.particles, this.coeffs.h);	//Przy zmianie coeffs, NIE zmieni się cellSize w siatce!
 	}
 	World.prototype.setCoeffs = function (coeffs) {
@@ -21,6 +22,11 @@ define(['Grid'], function (Grid) {
 	}
 	World.prototype.addBody = function (body) {
 		this.bodies.push(body);
+		return this;
+	}
+	World.prototype.addRepulsiveForceSource = function (repulsiveForceSource) {
+		this.repulsiveForceSources.push(repulsiveForceSource);
+		return this;
 	}
 	World.prototype.addParticles = function (particles) {
 		if(Array.isArray(particles))
@@ -63,7 +69,8 @@ define(['Grid'], function (Grid) {
 		
 		this.applyDoubleDensityRelaxation()
 			.applyViscosity(dt)
-			.applyCollisionsHandling();
+			.applyCollisionsHandling()
+			.applyRepulsiveForces();
 		
 		
 		//Apply velocity and position change
@@ -184,7 +191,20 @@ define(['Grid'], function (Grid) {
 		}
 		return this;
 	}
-	//*/
+	World.prototype.applyRepulsiveForces = function () {
+		for(var i = 0; i < this.repulsiveForceSources.length; i++) {
+			for(var j = 0; j < this.particles.length; j++) {
+				var r = this.particles[j].getDistance(this.repulsiveForceSources[i]);
+				if(r != 0) {
+					var F = - this.repulsiveForceSources[i].strength / (r * r);
+					var Fx = F * (this.repulsiveForceSources[i].coords.x - this.particles[j].coords.x) / r;
+					var Fy = F * (this.repulsiveForceSources[i].coords.y - this.particles[j].coords.y) / r;
+					this.particles[j].applyForce(Fx, Fy);
+				}
+			}
+		}
+		return this;
+	}
 	World.prototype.render = function (ctx) {
 		ctx.clearRect(0, 0, this.width*2, this.height*2);
 		ctx.fillStyle="rgb(70, 70, 255)";
