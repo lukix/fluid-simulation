@@ -1,6 +1,6 @@
-define(['Particle'], function (Particle) {
+define(['Particle', './geometry/Vector'], function (Particle, Vector) {
 	function WaterParticle(x, y) {
-		this.coords = {x: x, y: y};
+		this.coords = new Vector(x, y);
 		this.color = "#00f";
 		this.init();
 		this.coeffs = WaterParticle.coeffs;

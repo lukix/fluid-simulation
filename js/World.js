@@ -1,9 +1,9 @@
-define(['Grid'], function (Grid) {
+define(['Grid', './geometry/Vector'], function (Grid, Vector) {
 	function World(width, height) {
 		this.en = new Array(50);
 		this.width = width;
 		this.height = height;
-		this.gravity = {x: 0.0, y: 0.5};
+		this.gravity = new Vector(0.0, 0.5);
 		this.timeSpeed = 1.0/60;
 		this.coeffs = {
 			 h: 40				//Particles' distance from each other, at which they start interacting

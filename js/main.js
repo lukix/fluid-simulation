@@ -10,12 +10,13 @@ require(
 		,'Particle'
 		,'WaterParticle'
 		,'Body'
+		,'./geometry/Vector'
 		,'./ui/tiltButton'
 		,'./ui/mainLoop'
 		,'./ui/initCoeffsControls'
 		,'./ui/mouseControls'
 		,'./ui/rainModule'
-	], function($, World, Particle, WaterParticle, Body, tiltButton, mainLoop, initCoeffsControls, mouseControls, rainModule) {
+	], function($, World, Particle, WaterParticle, Body, Vector, tiltButton, mainLoop, initCoeffsControls, mouseControls, rainModule) {
 		myCanvas = document.getElementById('canvas');
 		myCanvas.width = $(myCanvas).width();
 		myCanvas.height = $(myCanvas).height();
@@ -29,9 +30,11 @@ require(
 		world.addParticlesGrid(PARTICLES_IN_ROW, PARTICLES_NUMBER/PARTICLES_IN_ROW, 200, Particle);
 		world.addParticlesGrid(PARTICLES_IN_ROW, PARTICLES_NUMBER/PARTICLES_IN_ROW, 900, WaterParticle);
 		world.addBody(new Body(
-			{x: 50, y: 50, angle: Math.PI/4},
-			[{x: 25, y: 25}, {x: 25, y: -25}, {x: -25, y: -25}, {x: -25, y: 25}]
-		));
+			 new Vector(25, 25)
+			,new Vector(25, -25)
+			,new Vector(-25, -25)
+			,new Vector(-25, 25)
+		).setCoords(new Vector(25, 500)));
 		
 		mainLoop(world);
 		(function render() {

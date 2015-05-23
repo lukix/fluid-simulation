@@ -1,4 +1,4 @@
-define(function () {
+define(['./geometry/Vector'], function (Vector) {
 	Function.prototype.inheritFrom = function (parentClass) {
 		if(parentClass.constructor == Function) {
 			this.prototype = new parentClass;
@@ -10,7 +10,7 @@ define(function () {
 	}
 
 	function Particle(x, y) {
-		this.coords = {x: x, y: y};
+		this.coords = new Vector(x, y);
 		this.color = "#f00";
 		this.init();
 		this.coeffs = Particle.coeffs;
@@ -28,8 +28,8 @@ define(function () {
 		,mass: 1.0
 	};
 	Particle.prototype.init = function () {
-		this.velocity = {x: 0.0, y: 0.0};
-		this.forces = {x: 0.0, y: 0.0};
+		this.velocity = new Vector(0.0, 0.0);
+		this.forces = new Vector(0.0, 0.0);
 		this.pressure = {normal: 0, near: 0};
 		/*
 		this.coeffs = {
@@ -98,7 +98,7 @@ define(function () {
 		return this;
 	}
 	Particle.prototype.clearForces = function () {
-		this.forces = {x: 0, y: 0};
+		this.forces = new Vector(0.0, 0.0);
 		return this;
 	}
 	Particle.prototype.clearPressure = function () {
@@ -106,7 +106,7 @@ define(function () {
 		return this;
 	}
 	Particle.prototype.clear = function () {
-		this.forces = {x: 0, y: 0};
+		this.forces = new Vector(0.0, 0.0);
 		this.pressure = {normal: 0, near: 0};
 		return this;
 	}
