@@ -1,4 +1,4 @@
-require(['./geometry/LineSegment', './geometry/Polygon', './geometry/Vector', 'Particle', 'Body'], function(LineSegment, Polygon,Vector, Particle, Body) {
+require(['./geometry/LineSegment', './geometry/Polygon', './geometry/Vector', 'Particle'], function(LineSegment, Polygon, Vector, Particle) {
 		QUnit.assert.close = function(number, expected, relError, message) {
 			var margin = relError*expected;
 			var result = number >= expected-margin && number <= expected+margin;
@@ -73,7 +73,12 @@ require(['./geometry/LineSegment', './geometry/Polygon', './geometry/Vector', 'P
 			assert.propEqual(a.getProjectedPoint(p), {x: 3, y: 3});
 			var p = {x: 0, y: 0};
 			assert.propEqual(a.getProjectedPoint(p), {x: 0, y: 0});
-		});	
+			
+			var a = new LineSegment({x: 25, y: 25}, {x: 25, y: -25});
+			var p = {x: -12, y: -26};
+			assert.equal(a.getProjectedPoint(p), null);
+		});
+		/*
 		QUnit.test("Polygon.constructor", function (assert) {
 			
 			var point = {x: 0, y: 1};
@@ -85,6 +90,7 @@ require(['./geometry/LineSegment', './geometry/Polygon', './geometry/Vector', 'P
 			});
 			
 		});
+		*/
 		QUnit.test("Polygon.minPoint", function (assert) {
 			var p = new Polygon(
 				 {x: 0, y: 0}
@@ -191,6 +197,39 @@ require(['./geometry/LineSegment', './geometry/Polygon', './geometry/Vector', 'P
 			var vec = new Vector(1, 0);
 			vec.extendBy(1);
 			assert.propEqual(vec, new Vector(2, 0));
+		});
+		
+		QUnit.test("Vector.getClosestSide", function (assert) {
+			var polygon = new Polygon(
+				 new Vector(0, 0)
+				,new Vector(0, 4)
+				,new Vector(4, 4)
+				,new Vector(4, 0)
+			).setCoords(new Vector(0, 0));
+			
+			var point = new Vector(-2, 1);
+			assert.propEqual(polygon.getClosestSide(point).p1, new Vector(0, 0));
+			assert.propEqual(polygon.getClosestSide(point).p2, new Vector(0, 4));
+			
+			var point = new Vector(2, -1);
+			assert.propEqual(polygon.getClosestSide(point).p1, new Vector(4, 0));
+			assert.propEqual(polygon.getClosestSide(point).p2, new Vector(0, 0));
+			
+			var point = new Vector(-2, -1);
+			assert.equal(polygon.getClosestSide(point), null);
+			
+			var polygon = new Polygon(
+				 new Vector(25, 25)
+				,new Vector(25, -25)
+				,new Vector(-25, -25)
+				,new Vector(-25, 25)
+			);//.setCoords(new Vector(25, 500));
+			//var point = new Vector(13.27869254624672, 473.6935763135761);
+			var point = new Vector(-12, -26);
+			console.log('Here:');
+			assert.propEqual(polygon.getClosestSide(point).p1, new Vector(25, -25));
+			assert.propEqual(polygon.getClosestSide(point).p2, new Vector(-25, -25));
+			
 		});
 		
 		QUnit.test("Vector.getExtractedPoint", function (assert) {	//Poor test! :(

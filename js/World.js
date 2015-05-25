@@ -1,4 +1,4 @@
-define(['Grid', './geometry/Vector'], function (Grid, Vector) {
+define(['Grid', './geometry/Vector', './geometry/LineSegment'], function (Grid, Vector, LineSegment) {
 	function World(width, height) {
 		this.en = new Array(50);
 		this.width = width;
@@ -37,7 +37,7 @@ define(['Grid', './geometry/Vector'], function (Grid, Vector) {
 	}
 	World.prototype.addParticlesGrid = function (X, Y, startX, particleClass) {
 		var space = 15;
-		var startY = space;
+		var startY = 300+space;
 		var particlesArr = [];
 		for(var x = 0; x < X; x++) {
 			for(var y = 0; y < Y; y++) {
@@ -69,8 +69,8 @@ define(['Grid', './geometry/Vector'], function (Grid, Vector) {
 		
 		this.applyDoubleDensityRelaxation()
 			.applyViscosity(dt)
-			.applyCollisionsHandling()
-			.applyRepulsiveForces();
+			.applyRepulsiveForces()
+			.applyBodiesColisions();
 		
 		
 		//Apply velocity and position change
@@ -154,38 +154,32 @@ define(['Grid', './geometry/Vector'], function (Grid, Vector) {
 		}, this);
 		return this;
 	}
-	World.prototype.applyCollisionsHandling = function () {
-		const extractDistance = 0.001;
+	World.prototype.applyBodiesColisions = function () {
 		for(var i = 0; i < this.particles.length; i++) {
-			
-			var r = this.height - this.particles[i].coords.y;
-			if(r <  this.particles[i].coeffs.d_stick) {
-				var F_stick =  this.particles[i].coeffs.k_stick * r * (1 - (r /  this.particles[i].coeffs.d_stick));
-				this.particles[i].applyForce(0, F_stick);
-				if(r < 0) {
-					this.particles[i].multipleForcesBy(this.particles[i].coeffs.wall_friction, -this.particles[i].coeffs.wall_normal);
-					this.particles[i].multipleVelocityBy(this.particles[i].coeffs.wall_friction, -this.particles[i].coeffs.wall_normal);
-					this.particles[i].setCoords(this.particles[i].coords.x, this.height - extractDistance);
-				}
-			}
-			var r = this.width - this.particles[i].coords.x;
-			if(r < this.particles[i].coeffs.d_stick) {
-				var F_stick = this.particles[i].coeffs.k_stick * r * (1 - (r / this.particles[i].coeffs.d_stick));
-				this.particles[i].applyForce(F_stick, 0);
-				if(r < 0) {
-					this.particles[i].multipleForcesBy(-this.particles[i].coeffs.wall_normal, this.particles[i].coeffs.wall_friction);
-					this.particles[i].multipleVelocityBy(-this.particles[i].coeffs.wall_normal, this.particles[i].coeffs.wall_friction);
-					this.particles[i].setCoords(this.width - extractDistance, this.particles[i].coords.y);
-				}
-			}
-			var r = this.particles[i].coords.x;
-			if(r < this.particles[i].coeffs.d_stick) {
-				var F_stick = this.particles[i].coeffs.k_stick * r * (1 - (r / this.particles[i].coeffs.d_stick));
-				this.particles[i].applyForce(-F_stick, 0);
-				if(r < 0) {
-					this.particles[i].multipleForcesBy(-this.particles[i].coeffs.wall_normal, this.particles[i].coeffs.wall_friction);
-					this.particles[i].multipleVelocityBy(-this.particles[i].coeffs.wall_normal, this.particles[i].coeffs.wall_friction);
-					this.particles[i].setCoords(extractDistance, this.particles[i].coords.y);
+			for(var j = 0; j < this.bodies.length; j++) {
+				var closestSide = this.bodies[j].getClosestSide(this.particles[i].coords);
+				if(closestSide != null) {
+					var relativeCoords = new Vector(this.particles[i].coords).subtract(this.bodies[j].coords);
+					var projectedPoint = closestSide.getProjectedPoint(relativeCoords);
+					projectedPoint.add(this.bodies[j].coords);
+					var r = projectedPoint.getDistance(this.particles[i].coords);
+					if(r < this.particles[i].coeffs.d_stick) {
+						var F_stick =  this.particles[i].coeffs.k_stick * r * (1 - (r /  this.particles[i].coeffs.d_stick));
+						var force = new LineSegment(projectedPoint, this.particles[i].coords).getUnitVector().multiplyBy(F_stick);
+						if(this.bodies[j].containsPoint(this.particles[i].coords)) {
+							this.particles[i].coords = this.bodies[j].getExtractedPoint(this.particles[i].coords);
+							var vn = this.particles[i].velocity.getNormalVector(closestSide.getUnitVector());
+							var vt = this.particles[i].velocity.getTangentVector(closestSide.getUnitVector());
+							vt.multiplyBy(this.particles[i].coeffs.wall_friction);
+							vn.invert().multiplyBy(this.particles[i].coeffs.wall_normal);
+							var fn = this.particles[i].forces.getNormalVector(closestSide.getUnitVector());
+							var ft = this.particles[i].forces.getTangentVector(closestSide.getUnitVector());
+							ft.multiplyBy(this.particles[i].coeffs.wall_friction);
+							fn.invert().multiplyBy(this.particles[i].coeffs.wall_normal);
+							this.particles[i].velocity = vt.add(vn);
+							this.particles[i].forces = ft.add(fn);
+						}
+					}
 				}
 			}
 		}

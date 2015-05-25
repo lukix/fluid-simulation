@@ -5,6 +5,7 @@ define(['./geometry/Polygon', './geometry/LineSegment', './geometry/Vector'], fu
 	}
 	Body.prototype.render = function (ctx) {
 		ctx.save();
+		ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
 		ctx.translate(this.coords.x, this.coords.y);
 		//ctx.rotate(this.angle);
 		ctx.beginPath();

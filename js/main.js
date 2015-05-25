@@ -16,7 +16,8 @@ require(
 		,'./ui/initCoeffsControls'
 		,'./ui/mouseControls'
 		,'./ui/rainModule'
-	], function($, World, Particle, WaterParticle, Body, Vector, tiltButton, mainLoop, initCoeffsControls, mouseControls, rainModule) {
+		,'addBodies'
+	], function($, World, Particle, WaterParticle, Body, Vector, tiltButton, mainLoop, initCoeffsControls, mouseControls, rainModule, addBodies) {
 		myCanvas = document.getElementById('canvas');
 		myCanvas.width = $(myCanvas).width();
 		myCanvas.height = $(myCanvas).height();
@@ -29,12 +30,11 @@ require(
 		const PARTICLES_IN_ROW = 25;
 		world.addParticlesGrid(PARTICLES_IN_ROW, PARTICLES_NUMBER/PARTICLES_IN_ROW, 200, Particle);
 		world.addParticlesGrid(PARTICLES_IN_ROW, PARTICLES_NUMBER/PARTICLES_IN_ROW, 900, WaterParticle);
-		world.addBody(new Body(
-			 new Vector(25, 25)
-			,new Vector(25, -25)
-			,new Vector(-25, -25)
-			,new Vector(-25, 25)
-		).setCoords(new Vector(25, 500)));
+		addBodies(world, myCanvas.width/ZOOM, myCanvas.height/ZOOM);
+		
+		setInterval(function () {
+			console.log(world.grid.gridArray);
+		}, 15000);
 		
 		mainLoop(world);
 		(function render() {

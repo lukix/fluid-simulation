@@ -93,6 +93,39 @@ define(['./LineSegment', './Vector'], function (LineSegment, Vector) {
 		}
 		return result;
 	}
+	Polygon.prototype.getClosestSide = function (point) {
+		var relativePoint = new Vector(point).subtract(this.coords);
+		var ep;
+		var i = 0;
+		while((ep = this.sides[i].getProjectedPoint(relativePoint)) == null) {
+			i++;
+			if(i >= this.sides.length) {
+				return null;
+			}
+		};
+		var minDistance = ep.getDistance(relativePoint);
+		var closestSideIndex = i;
+		for(; i < this.sides.length; i++) {
+			ep = this.sides[i].getProjectedPoint(relativePoint);
+			if(ep != null) {
+				if(ep.getDistance(relativePoint) < minDistance) {
+					minDistance = ep.getDistance(relativePoint);
+					closestSideIndex = i;
+				}
+			}
+		}
+		return this.sides[closestSideIndex];
+	}
+	Polygon.prototype.getExtractedPoint = function (point) {	//Method don't work if point is already outside of the poloygon	//Absolute
+		const margin = 0.001;
+		var relativePoint = new Vector(point).subtract(this.coords);
+		var closestSide = this.getClosestSide(point);
+		var edgePoint = closestSide.getProjectedPoint(relativePoint);
+		var displacementVector = edgePoint.subtract(relativePoint).extendBy(margin);
+		relativePoint.add(this.coords);
+		return new Vector(relativePoint).add(displacementVector);
+	}
+	/*
 	Polygon.prototype.getExtractedPoint = function (point) {	//Method don't work if point is already outside of the poloygon	//Absolute
 		var relativePoint = new Vector(point).subtract(this.coords);
 		const margin = 0.01;
@@ -102,7 +135,6 @@ define(['./LineSegment', './Vector'], function (LineSegment, Vector) {
 		while((ep = this.sides[i].getProjectedPoint(relativePoint)) == null) {
 			i++
 		};
-		console.log(i);
 		var minDistance = ep.getDistance(relativePoint);
 		for(; i < this.sides.length; i++) {
 			ep = this.sides[i].getProjectedPoint(relativePoint);
@@ -118,5 +150,6 @@ define(['./LineSegment', './Vector'], function (LineSegment, Vector) {
 		relativePoint.add(this.coords);
 		return new Vector(relativePoint).add(displacementVector);
 	}
+	*/
 	return Polygon;
 });
