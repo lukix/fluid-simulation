@@ -41,11 +41,13 @@ define(function () {
 	}
 	Vector.prototype.multiplyBy = function(n) {
 		var length = this.getLength();
-		var newLength = n*length;
-		var sin = this.y / length;
-		var cos = this.x / length;
-		this.x = newLength*cos;
-		this.y = newLength*sin;
+		if(length != 0) {
+			var newLength = n*length;
+			var sin = this.y / length;
+			var cos = this.x / length;
+			this.x = newLength*cos;
+			this.y = newLength*sin;
+		}
 		return this;
 	}
 	Vector.prototype.getNormalVector = function(vec) {

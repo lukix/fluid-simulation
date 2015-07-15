@@ -1,4 +1,4 @@
-define(['jquery'], function ($) {
+define(['jquery', 'nansDetector'], function ($, nansDetector) {
 	return function (world) {
 		const dtN = 15;
 		var lastDts = new Array(dtN);
@@ -24,6 +24,7 @@ define(['jquery'], function ($) {
 			$('#fps').html(str);
 			
 			world.nextStep(dt);
+			nansDetector(world.particles);
 			setTimeout(loop, 1);
 		})();
 		function getAvgVal(arr) {
