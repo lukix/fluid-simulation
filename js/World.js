@@ -1,5 +1,5 @@
 define(['Grid', './geometry/Vector', './geometry/LineSegment'], function (Grid, Vector, LineSegment) {
-	function World(width, height) {
+	function World(width, height, respawnCoords) {
 		this.en = new Array(50);
 		this.width = width;
 		this.height = height;
@@ -11,7 +11,18 @@ define(['Grid', './geometry/Vector', './geometry/LineSegment'], function (Grid, 
 		this.particles = [];
 		this.bodies = [];
 		this.repulsiveForceSources = []; // {coords: {x: number, y: number}, strength: number}
-		this.grid = new Grid(this.particles, this.coeffs.h);	//Przy zmianie coeffs, NIE zmieni się cellSize w siatce!
+		this.grid = new Grid(this.particles, this.coeffs.h);	//cellSize doesn't change when coeffs are changed!
+		if(typeof respawnCoords === "undefined") {
+			this.respawnCoords = new Vector(width/2, 0);
+		}
+		else
+			this.respawnCoords = respawnCoords;
+		this.isOutOfBoundsFunc = function (particle) {
+			if(particle.coords.y > height+100 || particle.coords.y < -height || particle.coords.x > width+100 || particle.coords.x < -width)
+				return true;
+			else
+				return false;
+		}
 	}
 	World.prototype.setCoeffs = function (coeffs) {
 		for(var i in coeffs) {
@@ -57,6 +68,10 @@ define(['Grid', './geometry/Vector', './geometry/LineSegment'], function (Grid, 
 		this.gravity.y = gravity.y;
 		return this;
 	}
+	World.prototype.setIsOutOfBoundsFunc = function(func) {
+		this.isOutOfBoundsFunc = func;
+		return this;
+	}
 	World.prototype.nextStep = function (dt) {
 		dt *= this.timeSpeed;
 		
@@ -70,7 +85,8 @@ define(['Grid', './geometry/Vector', './geometry/LineSegment'], function (Grid, 
 		this.applyDoubleDensityRelaxation()
 			.applyViscosity(dt)
 			.applyRepulsiveForces()
-			.applyBodiesColisions();
+			.applyBodiesCollisions()
+			.respawnParticles();
 		
 		
 		//Apply velocity and position change
@@ -141,7 +157,7 @@ define(['Grid', './geometry/Vector', './geometry/LineSegment'], function (Grid, 
 				}
 				//*/
 				if(isNaN(Ix) || isNaN(Iy)) {
-					console.error('Errorrek');
+					console.error('Error');
 					console.error(A.velocity.x, B.velocity.x);
 					console.error(u, ux, uy, I, Ix, Iy);
 				}
@@ -154,7 +170,7 @@ define(['Grid', './geometry/Vector', './geometry/LineSegment'], function (Grid, 
 		}, this);
 		return this;
 	}
-	World.prototype.applyBodiesColisions = function () {
+	World.prototype.applyBodiesCollisions = function () {
 		for(var i = 0; i < this.particles.length; i++) {
 			for(var j = 0; j < this.bodies.length; j++) {
 				var closestSide = this.bodies[j].getClosestSide(this.particles[i].coords);
@@ -181,6 +197,16 @@ define(['Grid', './geometry/Vector', './geometry/LineSegment'], function (Grid, 
 						}
 					}
 				}
+			}
+		}
+		return this;
+	}
+	World.prototype.respawnParticles = function () {
+		for(var i = 0; i < this.particles.length; i++) {
+			if(this.isOutOfBoundsFunc(this.particles[i])) {
+				this.particles[i].setCoords(this.respawnCoords.x, this.respawnCoords.y);
+				this.particles[i].setVelocity(0, 0);
+				this.particles[i].clearForces();
 			}
 		}
 		return this;

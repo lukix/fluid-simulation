@@ -32,10 +32,6 @@ require(
 		world.addParticlesGrid(PARTICLES_IN_ROW, PARTICLES_NUMBER/PARTICLES_IN_ROW, 900, WaterParticle);
 		addBodies(world, myCanvas.width/ZOOM, myCanvas.height/ZOOM);
 		
-		setInterval(function () {
-			console.log(world.grid.gridArray);
-		}, 15000);
-		
 		mainLoop(world);
 		(function render() {
 			world.render(ctx);

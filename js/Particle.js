@@ -6,7 +6,7 @@ define(['./geometry/Vector'], function (Vector) {
 			this.prototype.parent = parentClass.prototype;
 		}
 		else
-			console.log('inheritFrom warning!');				//USUNĄĆ PÓŹNIEJ
+			console.log('inheritFrom warning!');				//Should be deleted later
 	}
 
 	function Particle(x, y) {
