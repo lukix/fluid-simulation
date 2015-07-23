@@ -1,22 +1,22 @@
 requirejs.config({
 	'paths': {
-		'jquery': ['./lib/jquery-1.11.2.min']
+		'jquery': ['../lib/jquery-1.11.2.min']
 	}
 });
 require(
 	[
 		'jquery'
-		,'World'
-		,'Particle'
-		,'WaterParticle'
-		,'Body'
-		,'./geometry/Vector'
+		,'../fluid-simulation-engine/base/World'
+		,'../fluid-simulation-engine/base/Particle'
+		,'../fluid-simulation-engine/base/WaterParticle'
+		,'../fluid-simulation-engine/base/Body'
+		,'../fluid-simulation-engine/geometry/Vector'
 		,'./ui/tiltButton'
 		,'./ui/mainLoop'
 		,'./ui/initCoeffsControls'
 		,'./ui/mouseControls'
 		,'./ui/rainModule'
-		,'addBodies'
+		,'./addBodies'
 	], function($, World, Particle, WaterParticle, Body, Vector, tiltButton, mainLoop, initCoeffsControls, mouseControls, rainModule, addBodies) {
 		myCanvas = document.getElementById('canvas');
 		myCanvas.width = $(myCanvas).width();

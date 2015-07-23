@@ -1,4 +1,4 @@
-define(['jquery', 'nansDetector'], function ($, nansDetector) {
+define(['jquery', '../debug/nansDetector'], function ($, nansDetector) {
 	return function (world) {
 		const dtN = 15;
 		var lastDts = new Array(dtN);

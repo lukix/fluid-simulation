@@ -1,4 +1,4 @@
-define(['Grid', './geometry/Vector', './geometry/LineSegment'], function (Grid, Vector, LineSegment) {
+define(['./Grid', '../geometry/Vector', '../geometry/LineSegment'], function (Grid, Vector, LineSegment) {
 	function World(width, height, respawnCoords) {
 		this.en = new Array(50);
 		this.width = width;

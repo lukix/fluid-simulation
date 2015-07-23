@@ -1,4 +1,4 @@
-define(['./geometry/Vector'], function (Vector) {
+define(['../geometry/Vector'], function (Vector) {
 	Function.prototype.inheritFrom = function (parentClass) {
 		if(parentClass.constructor == Function) {
 			this.prototype = new parentClass;

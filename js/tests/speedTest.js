@@ -1,9 +1,9 @@
 requirejs.config({
 	'paths': {
-		'jquery': ['./lib/jquery-1.11.2.min']
+		'jquery': ['../lib/jquery-1.11.2.min']
 	}
 });
-require(['jquery', 'World', 'Particle'], function ($, World, Particle) {
+require(['jquery', '../fluid-simulation-engine/base/World', '../fluid-simulation-engine/base/Particle'], function ($, World, Particle) {
 	var res = runSpeedTest();
 	$('#control-box').html(JSON.stringify(res, null, '	'));
 	function runSpeedTest() {

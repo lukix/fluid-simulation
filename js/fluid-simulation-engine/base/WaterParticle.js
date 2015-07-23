@@ -1,4 +1,4 @@
-define(['Particle', './geometry/Vector'], function (Particle, Vector) {
+define(['./Particle', '../geometry/Vector'], function (Particle, Vector) {
 	function WaterParticle(x, y) {
 		this.coords = new Vector(x, y);
 		this.color = "#00f";

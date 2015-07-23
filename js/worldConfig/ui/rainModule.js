@@ -1,4 +1,4 @@
-define(['Particle'], function (Particle) {
+define(['../../fluid-simulation-engine/base/Particle'], function (Particle) {
 	return function (world) {
 		var rainClock = null;// = setInterval(rainGenerator, 100);
 		function rainGenerator() {

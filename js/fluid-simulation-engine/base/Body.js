@@ -1,4 +1,4 @@
-define(['./geometry/Polygon', './geometry/LineSegment', './geometry/Vector'], function (Polygon, LineSegment, Vector) {
+define(['../geometry/Polygon', '../geometry/LineSegment', '../geometry/Vector'], function (Polygon, LineSegment, Vector) {
 	Body.inheritFrom(Polygon);
 	function Body() {
 		Polygon.apply(this, arguments);

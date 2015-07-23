@@ -1,4 +1,4 @@
-require(['./geometry/LineSegment', './geometry/Polygon', './geometry/Vector', 'Particle'], function(LineSegment, Polygon, Vector, Particle) {
+require(['../fluid-simulation-engine/geometry/LineSegment', '../fluid-simulation-engine/geometry/Polygon', '../fluid-simulation-engine/geometry/Vector', '../fluid-simulation-engine/base/Particle'], function(LineSegment, Polygon, Vector, Particle) {
 		QUnit.assert.close = function(number, expected, relError, message) {
 			var margin = relError*expected;
 			var result = number >= expected-margin && number <= expected+margin;
