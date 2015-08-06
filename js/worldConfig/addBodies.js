@@ -1,4 +1,4 @@
-define(['jquery', '../fluid-simulation-engine/base/Body', '../fluid-simulation-engine/geometry/Vector'], function ($, Body, Vector) {
+define(['../fluid-simulation-engine/base/Body', '../fluid-simulation-engine/geometry/Vector'], function (Body, Vector) {
 	return function (world, width, height) {
 		//Bottom wall
 		world.addBody(new Body(
