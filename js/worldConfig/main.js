@@ -13,11 +13,10 @@ require(
 		,'../fluid-simulation-engine/geometry/Vector'
 		,'./ui/tiltButton'
 		,'./ui/mainLoop'
-		,'./ui/initCoeffsControls'
 		,'./ui/mouseControls'
 		,'./ui/rainModule'
 		,'./addBodies'
-	], function($, World, Particle, WaterParticle, Body, Vector, tiltButton, mainLoop, initCoeffsControls, mouseControls, rainModule, addBodies) {
+	], function($, World, Particle, WaterParticle, Body, Vector, tiltButton, mainLoop, mouseControls, rainModule, addBodies) {
 		myCanvas = document.getElementById('canvas');
 		myCanvas.width = $(myCanvas).width();
 		myCanvas.height = $(myCanvas).height();
@@ -37,7 +36,7 @@ require(
 			world.render(ctx);
 			requestAnimationFrame(render);
 		})();
-		initCoeffsControls(world);
+		//initCoeffsControls(world);
 		rainModule(world);
 		$('#gravityChangerButton').click(function () {
 			var gx = world.gravity.x;
