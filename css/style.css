@@ -47,16 +47,3 @@ input[type=button]:hover {
 input[type=button]:active {
 	background-color: rgba(0, 0, 0, 0.6);
 }
-form#coeffs {
-	margin-top: 10px;
-}
-form#coeffs input[type=number] {
-	margin-bottom: 2px;
-	margin-right: 5px;
-	border: none;
-	width: 50px;
-}
-.validateError {
-	color: red;
-	background-color: #f99;
-}
