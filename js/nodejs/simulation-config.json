@@ -1,0 +1,11 @@
+{
+	"width": 1422
+	,"height": 691
+	,"particles_number": 1500
+	,"particles_in_row": 25
+	,"frame_time": 30
+	,"steps_per_frame": 1
+	,"recording_time": 20000
+	,"file_name": "./simulations-files/sample-simulation.json"
+	,"decimal_places": 1
+}
