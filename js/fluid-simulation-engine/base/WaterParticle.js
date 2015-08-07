@@ -1,4 +1,5 @@
-define(['./Particle', '../geometry/Vector'], function (Particle, Vector) {
+define(['./Particle', '../geometry/Vector', './inheritFrom'], function (Particle, Vector, inheritFrom) {
+	WaterParticle.inheritFrom = inheritFrom;
 	function WaterParticle(x, y) {
 		this.coords = new Vector(x, y);
 		this.color = "#00f";

@@ -1,14 +1,4 @@
 define(['../geometry/Vector'], function (Vector) {
-	Function.prototype.inheritFrom = function (parentClass) {
-		if(parentClass.constructor == Function) {
-			this.prototype = new parentClass;
-			this.prototype.constructor = this;
-			this.prototype.parent = parentClass.prototype;
-		}
-		else
-			console.log('inheritFrom warning!');				//Should be deleted later
-	}
-
 	function Particle(x, y) {
 		this.coords = new Vector(x, y);
 		this.color = "#f00";
