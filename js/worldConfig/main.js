@@ -34,6 +34,7 @@ require(
 
 		mainLoop(world);
 		(function render() {
+			ctx.clearRect(0, 0, world.width*2, world.height*2);
 			world.render(ctx);
 			requestAnimationFrame(render);
 		})();

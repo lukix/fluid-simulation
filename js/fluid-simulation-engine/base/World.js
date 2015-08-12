@@ -74,21 +74,21 @@ define(['./Grid', '../geometry/Vector', '../geometry/LineSegment'], function (Gr
 	}
 	World.prototype.nextStep = function (dt) {
 		dt *= this.timeSpeed;
-		
+
 		//apply gravity
 		for(var i in this.particles) {
 			var mass = this.particles[i].coeffs.mass;
 			this.particles[i].clearForces();
 			this.particles[i].applyForce(this.gravity.x*mass, this.gravity.y*mass);
 		}
-		
+
 		this.applyDoubleDensityRelaxation()
 			.applyViscosity(dt)
 			.applyRepulsiveForces()
 			.applyBodiesCollisions()
 			.respawnParticles();
-		
-		
+
+
 		//Apply velocity and position change
 		for(var i=0; i<this.particles.length; i++) {
 			var forces = this.particles[i].getForces();
@@ -125,10 +125,10 @@ define(['./Grid', '../geometry/Vector', '../geometry/LineSegment'], function (Gr
 			if(q < 1) {
 				var xr = (A.coords.x-B.coords.x)/r;
 				var yr = (A.coords.y-B.coords.y)/r;
-				
+
 				var a1=(A.pressure.normal*(1-q)+A.pressure.near*(1-q)*(1-q))/2;
 				var a2=(B.pressure.normal*(1-q)+B.pressure.near*(1-q)*(1-q))/2;
-				
+
 				A.applyForce((a1+a2)*xr, (a1+a2)*yr);
 				B.applyForce(-(a1+a2)*xr, -(a1+a2)*yr);
 			}
@@ -143,10 +143,10 @@ define(['./Grid', '../geometry/Vector', '../geometry/LineSegment'], function (Gr
 				var ux = A.velocity.x - B.velocity.x;
 				var uy = A.velocity.y - B.velocity.y;
 				var u = Math.sqrt(ux*ux+uy*uy);
-				
+
 				var visc_lin = A.coeffs.visc_lin * B.coeffs.visc_lin;
 				var visc_qua = A.coeffs.visc_qua * B.coeffs.visc_qua;
-				
+
 				var I = (1-q)*(visc_lin*u+visc_qua*u*u);
 				var Ix = (ux/u)*I;
 				var Iy = (uy/u)*I;
@@ -163,7 +163,7 @@ define(['./Grid', '../geometry/Vector', '../geometry/LineSegment'], function (Gr
 				}
 				//this.particles[i].applyForce(-Ix, -Iy);
 				//this.particles[j].applyForce(Ix, Iy);
-				
+
 				A.changeVelocityBy(-dt*Ix, -dt*Iy);
 				B.changeVelocityBy(dt*Ix, dt*Iy);
 			}
@@ -226,72 +226,13 @@ define(['./Grid', '../geometry/Vector', '../geometry/LineSegment'], function (Gr
 		return this;
 	}
 	World.prototype.render = function (ctx) {
-		ctx.clearRect(0, 0, this.width*2, this.height*2);
-		ctx.fillStyle="rgb(70, 70, 255)";
-		ctx.lineWidth = 5;
 		for(var i = 0; i < this.particles.length; i++) {
 			this.particles[i].render(ctx);
 		}
-		ctx.fillStyle="rgb(70, 70, 255)";
 		for(var i = 0; i < this.bodies.length; i++) {
 			this.bodies[i].render(ctx);
 		}
 		return this;
-	}
-	World.prototype.render2 = function (ctx) {
-		ctx.clearRect(0, 0, this.width, this.height);
-		ctx.fillStyle="rgb(70, 70, 255)";
-		for(var i = 0; i < this.particles.length; i++) {
-			var neighbors = this.getNeighborsArray(this.particles[i], 0.8*this.coeffs.h);
-			if(neighbors.length == 1) {
-				neighbors[0].render(ctx);
-			}
-			else {
-				var convexHull = World.getConvexHull(neighbors);
-				ctx.beginPath();
-				ctx.moveTo(convexHull[0].coords.x, convexHull[0].coords.y);
-				for(var j = 1; j < convexHull.length; j++)
-					ctx.lineTo(convexHull[j].coords.x, convexHull[j].coords.y);
-				ctx.closePath();
-				ctx.fill();
-			}
-		}
-	}
-	World.getConvexHull = function (particles) {
-		var convexHull = [];
-		var maxIndex = 0;
-		var maxX = particles[0].coords.x;
-		for(var i = 1; i < particles.length; i++) {
-			if(particles[i].coords.x > maxX) {
-				maxIndex = i;
-				maxX = particles[i].coords.x;
-			}
-		}
-		var hullPoint = particles[maxIndex];
-		var i = 0;
-		var nextPoint;
-		do {
-			convexHull[i] = hullPoint;
-			nextPoint = particles[0];
-			if(nextPoint == hullPoint)
-				nextPoint = particles[1];
-			for(var j = 0; j < particles.length; j++) {
-				if(hullPoint != nextPoint && particles[j].onTheLeft(hullPoint, nextPoint) > 0)
-					nextPoint = particles[j];
-			}
-			i++;
-			hullPoint = nextPoint;
-		}
-		while(nextPoint != convexHull[0]);
-		return convexHull;
-	}
-	World.prototype.getNeighborsArray = function (particle, radius) {
-		var neighbors = [];
-		for(var i = 0; i < this.particles.length; i++) {
-			if(particle.getDistance(this.particles[i]) < radius)
-				neighbors.push(this.particles[i]);
-		}
-		return neighbors;
 	}
 	return World;
 });
