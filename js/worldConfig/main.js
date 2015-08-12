@@ -17,10 +17,11 @@ require(
 		,'./ui/rainModule'
 		,'./addBodies'
 	], function($, World, Particle, WaterParticle, Body, Vector, tiltButton, mainLoop, mouseControls, rainModule, addBodies) {
-		myCanvas = document.getElementById('canvas');
+		var myCanvas = document.getElementById('canvas');
 		myCanvas.width = $(myCanvas).width();
 		myCanvas.height = $(myCanvas).height();
-		if (!(ctx = myCanvas.getContext('2d')))
+		var ctx = myCanvas.getContext('2d');
+		if (!ctx)
 			return false;
 		const ZOOM = 0.9;
 		ctx.scale(ZOOM, ZOOM);
@@ -30,13 +31,12 @@ require(
 		world.addParticlesGrid(PARTICLES_IN_ROW, PARTICLES_NUMBER/PARTICLES_IN_ROW, 200, Particle);
 		world.addParticlesGrid(PARTICLES_IN_ROW, PARTICLES_NUMBER/PARTICLES_IN_ROW, 900, WaterParticle);
 		addBodies(world, myCanvas.width/ZOOM, myCanvas.height/ZOOM);
-		
+
 		mainLoop(world);
 		(function render() {
 			world.render(ctx);
 			requestAnimationFrame(render);
 		})();
-		//initCoeffsControls(world);
 		rainModule(world);
 		$('#gravityChangerButton').click(function () {
 			var gx = world.gravity.x;
