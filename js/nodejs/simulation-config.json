@@ -6,6 +6,5 @@
 	,"frame_time": 30
 	,"steps_per_frame": 1
 	,"recording_time": 20000
-	,"file_name": "./simulations-files/sample-simulation.json"
-	,"decimal_places": 1
+	,"file_name": "./simulations-files/sample-simulation"
 }

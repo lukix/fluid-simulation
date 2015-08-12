@@ -35,11 +35,13 @@ requirejs(
   		world.addParticlesGrid(config.particles_in_row, config.particles_number/config.particles_in_row, 900, WaterParticle);
   		addBodies(world, config.width, config.height);
 
-  		console.log("Recording started!");
   		var time = new Date().getTime();
-  		var recorder = new Recorder(world, config.frame_time);
+      var file = fs.openSync(config.file_name, "w");
+  		var recorder = new Recorder(world, config.frame_time, file);
+      recorder.initFile();
+      console.log("Recording started!");
   		for(var t = 0; t < config.recording_time; t+=config.frame_time) {
-  			recorder.addFrame(config.decimal_places);
+        recorder.saveFrameToFile();
   			for(var i = 0; i < config.steps_per_frame; i++) {
   				world.nextStep(config.frame_time/config.steps_per_frame);
   			}
@@ -49,13 +51,7 @@ requirejs(
         process.stdout.cursorTo(0);
   			process.stdout.write("Progress: " + progress.toFixed(1) + "%");
   		}
-  		console.log('\nWriting to file');
-  		if(recorder.saveToFile(config.file_name)) {
-  			console.log('Simulation saved to file "' + config.file_name + '"');
-  			console.log('Time: ' + (new Date().getTime() - time) + "ms");
-  		}
-  		else
-  			console.log('Error while writing to file');
+      fs.closeSync(file);
   	}
   }
 );
