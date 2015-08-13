@@ -31,8 +31,8 @@ requirejs(
       }
 
   		var world = new World(config.width, config.height);
-  		world.addParticlesGrid(config.particles_in_row, config.particles_number/config.particles_in_row, 200, -500, Particle);
-  		world.addParticlesGrid(config.particles_in_row, config.particles_number/config.particles_in_row, 900, -500, WaterParticle);
+  		world.addParticlesGrid(config.particles_in_row, (config.particles_number/2)/config.particles_in_row, 200, -500, Particle);
+  		world.addParticlesGrid(config.particles_in_row, (config.particles_number/2)/config.particles_in_row, 900, -500, WaterParticle);
   		addBodies(world);
 
   		var time = new Date().getTime();
