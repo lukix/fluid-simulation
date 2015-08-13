@@ -4,8 +4,9 @@ define([
 	,'./render'
 	,'../../fluid-simulation-engine/base/World'
 	,'../addBodies'
-], function ($, DataProvider, render, World, addBodies) {
-	return function (ctx, myCanvas) {
+	,'../../uiCommonModules/cameraSmartPoint'
+], function ($, DataProvider, render, World, addBodies, cameraSmartPoint) {
+	return function (ctx, myCanvas, TRANSFORM) {
 		var dataProvider;
 		var isReady = false;
 		if(!(window.File && window.FileReader && window.FileList && window.Blob))
@@ -22,6 +23,7 @@ define([
 				$('#filePanel').fadeOut();
 				var world = new World(dataProvider.simulationData.width, dataProvider.simulationData.height);
 				addBodies(world);
+				cameraSmartPoint(ctx, TRANSFORM, myCanvas, world);
 				render(dataProvider, world, ctx, myCanvas, function () {
 					$('#filePanel').fadeIn();
 					setReadiness(false, dataProvider.file.name);

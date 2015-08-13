@@ -24,7 +24,7 @@ require(
 			ctx.setTransform(TRANSFORM.scale_x, 0, 0, TRANSFORM.scale_y, TRANSFORM.x, TRANSFORM.y);
 		});
 
-		if(!ui(ctx, myCanvas)) {
+		if(!ui(ctx, myCanvas, TRANSFORM)) {
 			console.log("Your browser doesn't support file API");
 		}
 		mouseCameraMove(ctx, TRANSFORM);

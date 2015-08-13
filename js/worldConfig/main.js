@@ -16,16 +16,17 @@ require(
 		,'./ui/mouseRepulsor'
 		,'../uiCommonModules/mouseCameraMove'
 		,'../uiCommonModules/mouseCameraZoom'
+		,'../uiCommonModules/cameraSmartPoint'
 		,'./ui/rainModule'
 		,'./addBodies'
-	], function($, World, Particle, WaterParticle, Body, Vector, tiltButton, mainLoop, mouseRepulsor, mouseCameraMove, mouseCameraZoom, rainModule, addBodies) {
+	], function($, World, Particle, WaterParticle, Body, Vector, tiltButton, mainLoop, mouseRepulsor, mouseCameraMove, mouseCameraZoom, cameraSmartPoint, rainModule, addBodies) {
 		var myCanvas = document.getElementById('canvas');
 		myCanvas.width = $(myCanvas).width();
 		myCanvas.height = $(myCanvas).height();
 		var ctx = myCanvas.getContext('2d');
 		if (!ctx)
 			return false;
-		var TRANSFORM = {x: 300, y: 300, scale_x: 0.5, scale_y: 0.5};
+		var TRANSFORM = {x: 0, y: 0, scale_x: 1, scale_y: 1};
 		ctx.setTransform(TRANSFORM.scale_x, 0, 0, TRANSFORM.scale_y, TRANSFORM.x, TRANSFORM.y);
 
 		$(window).resize(function () {
@@ -65,6 +66,7 @@ require(
 		$('#tiltButton').click(function () {
 			tiltButton(world);
 		});
+		cameraSmartPoint(ctx, TRANSFORM, myCanvas, world);
 		mouseRepulsor(world, TRANSFORM);
 		mouseCameraMove(ctx, TRANSFORM);
 		mouseCameraZoom(ctx, TRANSFORM);
