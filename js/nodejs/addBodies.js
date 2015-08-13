@@ -1,5 +1,7 @@
 define(['../fluid-simulation-engine/base/Body', '../fluid-simulation-engine/geometry/Vector'], function (Body, Vector) {
-	return function (world, width, height) {
+	return function (world) {
+		var width = 1422;
+		var height = 633;
 		//Bottom wall
 		world.addBody(new Body(
 			 new Vector(-(100-10), 0)

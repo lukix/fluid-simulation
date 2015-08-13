@@ -31,9 +31,9 @@ requirejs(
       }
 
   		var world = new World(config.width, config.height);
-  		world.addParticlesGrid(config.particles_in_row, config.particles_number/config.particles_in_row, 200, Particle);
-  		world.addParticlesGrid(config.particles_in_row, config.particles_number/config.particles_in_row, 900, WaterParticle);
-  		addBodies(world, config.width, config.height);
+  		world.addParticlesGrid(config.particles_in_row, config.particles_number/config.particles_in_row, 200, -500, Particle);
+  		world.addParticlesGrid(config.particles_in_row, config.particles_number/config.particles_in_row, 900, -500, WaterParticle);
+  		addBodies(world);
 
   		var time = new Date().getTime();
       var file = fs.openSync(config.file_name, "w");

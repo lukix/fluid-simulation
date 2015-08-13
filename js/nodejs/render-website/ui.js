@@ -5,7 +5,7 @@ define([
 	,'../../fluid-simulation-engine/base/World'
 	,'../addBodies'
 ], function ($, DataProvider, render, World, addBodies) {
-	return function (ctx) {
+	return function (ctx, myCanvas) {
 		var dataProvider;
 		var isReady = false;
 		if(!(window.File && window.FileReader && window.FileList && window.Blob))
@@ -21,8 +21,8 @@ define([
 			if(isReady) {
 				$('#filePanel').fadeOut();
 				var world = new World(dataProvider.simulationData.width, dataProvider.simulationData.height);
-				addBodies(world, dataProvider.simulationData.width, dataProvider.simulationData.height);
-				render(dataProvider, world, ctx, function () {
+				addBodies(world);
+				render(dataProvider, world, ctx, myCanvas, function () {
 					$('#filePanel').fadeIn();
 					setReadiness(false, dataProvider.file.name);
 					dataProvider = new DataProvider(dataProvider.file, onDataProviderReady);

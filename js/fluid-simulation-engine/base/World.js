@@ -46,16 +46,15 @@ define(['./Grid', '../geometry/Vector', '../geometry/LineSegment'], function (Gr
 			this.particles.push(particles);
 		return this;
 	}
-	World.prototype.addParticlesGrid = function (X, Y, startX, particleClass) {
-		var space = 15;
-		var startY = 300+space;
+	World.prototype.addParticlesGrid = function (X, Y, startX, startY, particleClass) {
+		var space = 0.355;
 		var particlesArr = [];
 		for(var x = 0; x < X; x++) {
 			for(var y = 0; y < Y; y++) {
 				particlesArr.push(
 					new particleClass(
-						 startX + x * space
-						,this.height - (startY + y * space)
+						 startX + x * this.coeffs.h * space
+						,startY + y * this.coeffs.h * space
 					)
 				);
 			}

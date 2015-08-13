@@ -7,18 +7,27 @@ require(
 	[
 		 'jquery'
 		,'./ui'
-	], function($, ui, addBodies) {
-		var ctx = (function () {
-			var myCanvas = document.getElementById('canvas');
+		,'../../uiCommonModules/mouseCameraMove'
+		,'../../uiCommonModules/mouseCameraZoom'
+	], function($, ui, mouseCameraMove, mouseCameraZoom) {
+
+		var myCanvas = document.getElementById('canvas');
+		myCanvas.width = $(myCanvas).width();
+		myCanvas.height = $(myCanvas).height();
+		var ctx = myCanvas.getContext('2d');
+		var TRANSFORM = {x: 0, y: 0, scale_x: 0.9, scale_y: 0.9};
+		ctx.setTransform(TRANSFORM.scale_x, 0, 0, TRANSFORM.scale_y, TRANSFORM.x, TRANSFORM.y);
+
+		$(window).resize(function () {
 			myCanvas.width = $(myCanvas).width();
 			myCanvas.height = $(myCanvas).height();
-			var ctx = myCanvas.getContext('2d');
-			const ZOOM = 0.9;
-			ctx.scale(ZOOM, ZOOM);
-			return ctx;
-		})();
-		if(!ui(ctx)) {
+			ctx.setTransform(TRANSFORM.scale_x, 0, 0, TRANSFORM.scale_y, TRANSFORM.x, TRANSFORM.y);
+		});
+
+		if(!ui(ctx, myCanvas)) {
 			console.log("Your browser doesn't support file API");
 		}
+		mouseCameraMove(ctx, TRANSFORM);
+		mouseCameraZoom(ctx, TRANSFORM);
 	}
 );
