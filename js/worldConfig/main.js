@@ -35,11 +35,20 @@ require(
 			ctx.setTransform(TRANSFORM.scale_x, 0, 0, TRANSFORM.scale_y, TRANSFORM.x, TRANSFORM.y);
 		});
 
-		var world = new World(1800, 600, new Vector(600, -300));
+		var world = new World(1800, 600);
+		addBodies(world);
+		(function () {
+			var maxPoint = world.getBodiesMaxPoint();
+			world.setOutOfBoundsBehaviour(new Vector(600, -300), function (particle) {
+				if(particle.coords.y > maxPoint.y)
+					return true;
+				else
+					return false;
+			});
+		})();
 		const PARTICLES_NUMBER = 1000;
 		const PARTICLES_IN_ROW = 25;
 		world.addParticlesGrid(PARTICLES_IN_ROW, PARTICLES_NUMBER/PARTICLES_IN_ROW, 50, -240, WaterParticle);
-		addBodies(world);
 		mainLoop(world);
 		(function render() {
 			ctx.save();

@@ -1,5 +1,5 @@
 define(['./Grid', '../geometry/Vector', '../geometry/LineSegment'], function (Grid, Vector, LineSegment) {
-	function World(width, height, respawnCoords) {
+	function World(width, height) {
 		this.en = new Array(50);
 		this.width = width;
 		this.height = height;
@@ -12,17 +12,15 @@ define(['./Grid', '../geometry/Vector', '../geometry/LineSegment'], function (Gr
 		this.bodies = [];
 		this.repulsiveForceSources = []; // {coords: {x: number, y: number}, strength: number}
 		this.grid = new Grid(this.particles, this.coeffs.h);	//cellSize doesn't change when coeffs are changed!
-		if(typeof respawnCoords === "undefined") {
-			this.respawnCoords = new Vector(width/2, 0);
-		}
-		else
-			this.respawnCoords = respawnCoords;
+		this.respawnCoords;
 		this.isOutOfBoundsFunc = function (particle) {
-			if(particle.coords.y > height+100 || particle.coords.y < -height || particle.coords.x > width+100 || particle.coords.x < -width)
-				return true;
-			else
-				return false;
+			return false;
 		}
+	}
+	World.prototype.setOutOfBoundsBehaviour = function (respawnCoords, isOutOfBoundsFunc) {
+		this.isOutOfBoundsFunc = isOutOfBoundsFunc;
+		this.respawnCoords = respawnCoords;
+		return this;
 	}
 	World.prototype.setCoeffs = function (coeffs) {
 		for(var i in coeffs) {
@@ -36,6 +34,8 @@ define(['./Grid', '../geometry/Vector', '../geometry/LineSegment'], function (Gr
 		return this;
 	}
 	World.prototype.getBodiesMinPoint = function () {
+		if(this.bodies.length == 0)
+			return null;
 		var minPoint = this.bodies[0].minPoint();
 		for(var i = 0; i < this.bodies.length; i++) {
 			var min = this.bodies[i].minPoint();
@@ -47,6 +47,8 @@ define(['./Grid', '../geometry/Vector', '../geometry/LineSegment'], function (Gr
 		return minPoint;
 	}
 	World.prototype.getBodiesMaxPoint = function () {
+		if(this.bodies.length == 0)
+			return null;
 		var maxPoint = this.bodies[0].maxPoint();
 		for(var i = 0; i < this.bodies.length; i++) {
 			var max = this.bodies[i].maxPoint();
