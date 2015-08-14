@@ -1,7 +1,5 @@
 {
-	"width": 1422
-	,"height": 691
-	,"particles_number": 3000
+	 "particles_number": 3000
 	,"particles_in_row": 25
 	,"frame_time": 30
 	,"steps_per_frame": 1

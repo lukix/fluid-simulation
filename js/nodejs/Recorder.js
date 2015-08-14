@@ -9,14 +9,10 @@ define([], function () {
 	Recorder.prototype.initFile = function () {
 		/*
 		 	frame time - Uint32Array - 4 bytes
-			width -  Uint32Array - 4 bytes
-			height - Uint32Array - 4 bytes
 		*/
-		var bufferLength = 3 * 4;
+		var bufferLength = 1 * 4;
 		var buffer = new Buffer(bufferLength);
 		buffer.writeUInt32LE(this.frameTime, 0*4);
-		buffer.writeUInt32LE(this.world.width, 1*4);
-		buffer.writeUInt32LE(this.world.height, 2*4);
 		fs.writeSync(this.file, buffer, 0, bufferLength);
 		this.filePosition += bufferLength;
 	}

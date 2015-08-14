@@ -35,7 +35,7 @@ require(
 			ctx.setTransform(TRANSFORM.scale_x, 0, 0, TRANSFORM.scale_y, TRANSFORM.x, TRANSFORM.y);
 		});
 
-		var world = new World(1800, 600);
+		var world = new World();
 		addBodies(world);
 		(function () {
 			var maxPoint = world.getBodiesMaxPoint();

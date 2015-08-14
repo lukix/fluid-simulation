@@ -21,7 +21,7 @@ define([
 		$('#filePanel>div').click(function () {
 			if(isReady) {
 				$('#filePanel').fadeOut();
-				var world = new World(dataProvider.simulationData.width, dataProvider.simulationData.height);
+				var world = new World();
 				addBodies(world);
 				cameraSmartPoint(ctx, TRANSFORM, myCanvas, world);
 				render(dataProvider, world, ctx, myCanvas, function () {

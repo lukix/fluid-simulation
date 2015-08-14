@@ -5,8 +5,6 @@ define([], function () {
 			this.nextFrameParticlesNumber = 0;
 			this.simulationData = {
 				 frameTime: null
-				,width: null
-				,height: null
 				,frames: []
 			};
 			this.loadedFrames = 40;
@@ -21,15 +19,13 @@ define([], function () {
 		}
 		DataProvider.prototype.init = function (callback) {
 			var reader = new FileReader(this.file);
-			this.readNextSlice(reader, 4*4);
+			this.readNextSlice(reader, 2*4);
 			var THIS = this;
 			reader.onload = function (e) {
 				var buffer = e.target.result;
 				var uint32View = new Uint32Array(buffer);
 				THIS.simulationData.frameTime = uint32View[0];
-				THIS.simulationData.width = uint32View[1];
-				THIS.simulationData.height = uint32View[2];
-				THIS.nextFrameParticlesNumber = uint32View[3];
+				THIS.nextFrameParticlesNumber = uint32View[1];
 				callback();
 			}
 		}

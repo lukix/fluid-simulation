@@ -1,8 +1,6 @@
 define(['./Grid', '../geometry/Vector', '../geometry/LineSegment'], function (Grid, Vector, LineSegment) {
-	function World(width, height) {
+	function World() {
 		this.en = new Array(50);
-		this.width = width;
-		this.height = height;
 		this.gravity = new Vector(0.0, 0.5);
 		this.timeSpeed = 1.0/60;
 		this.coeffs = {
