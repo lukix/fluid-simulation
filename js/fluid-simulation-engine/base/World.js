@@ -35,6 +35,28 @@ define(['./Grid', '../geometry/Vector', '../geometry/LineSegment'], function (Gr
 		this.bodies.push(body);
 		return this;
 	}
+	World.prototype.getBodiesMinPoint = function () {
+		var minPoint = this.bodies[0].minPoint();
+		for(var i = 0; i < this.bodies.length; i++) {
+			var min = this.bodies[i].minPoint();
+			if(min.x < minPoint.x)
+				minPoint.x = min.x;
+			if(min.y < minPoint.y)
+				minPoint.y = min.y;
+		}
+		return minPoint;
+	}
+	World.prototype.getBodiesMaxPoint = function () {
+		var maxPoint = this.bodies[0].maxPoint();
+		for(var i = 0; i < this.bodies.length; i++) {
+			var max = this.bodies[i].maxPoint();
+			if(max.x > maxPoint.x)
+				maxPoint.x = max.x;
+			if(max.y > maxPoint.y)
+				maxPoint.y = max.y;
+		}
+		return maxPoint;
+	}
 	World.prototype.addRepulsiveForceSource = function (repulsiveForceSource) {
 		this.repulsiveForceSources.push(repulsiveForceSource);
 		return this;
