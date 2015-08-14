@@ -38,9 +38,10 @@ require(
 		var world = new World();
 		addBodies(world);
 		(function () {
+			var minPoint = world.getBodiesMinPoint();
 			var maxPoint = world.getBodiesMaxPoint();
 			world.setOutOfBoundsBehaviour(new Vector(600, -300), function (particle) {
-				if(particle.coords.y > maxPoint.y)
+				if(particle.coords.y > maxPoint.y || particle.coords.y < minPoint.y || particle.coords.x > maxPoint.x || particle.coords.x < minPoint.x)
 					return true;
 				else
 					return false;
