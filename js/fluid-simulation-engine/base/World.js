@@ -97,7 +97,7 @@ define(['./Grid', '../geometry/Vector', '../geometry/LineSegment'], function (Gr
 		dt *= this.timeSpeed;
 
 		//apply gravity
-		for(var i in this.particles) {
+		for(var i = 0; i < this.particles.length; i++) {
 			var mass = this.particles[i].coeffs.mass;
 			this.particles[i].clearForces();
 			this.particles[i].applyForce(this.gravity.x*mass, this.gravity.y*mass);
@@ -108,7 +108,6 @@ define(['./Grid', '../geometry/Vector', '../geometry/LineSegment'], function (Gr
 			.applyRepulsiveForces()
 			.applyBodiesCollisions()
 			.respawnParticles();
-
 
 		//Apply velocity and position change
 		for(var i=0; i<this.particles.length; i++) {
