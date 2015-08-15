@@ -17,9 +17,8 @@ require(
 		,'../uiCommonModules/mouseCameraMove'
 		,'../uiCommonModules/mouseCameraZoom'
 		,'../uiCommonModules/cameraSmartPoint'
-		,'./ui/rainModule'
 		,'./addBodies'
-	], function($, World, Particle, WaterParticle, Body, Vector, tiltButton, mainLoop, mouseRepulsor, mouseCameraMove, mouseCameraZoom, cameraSmartPoint, rainModule, addBodies) {
+	], function($, World, Particle, WaterParticle, Body, Vector, tiltButton, mainLoop, mouseRepulsor, mouseCameraMove, mouseCameraZoom, cameraSmartPoint, addBodies) {
 		var myCanvas = document.getElementById('canvas');
 		myCanvas.width = $(myCanvas).width();
 		myCanvas.height = $(myCanvas).height();
@@ -60,7 +59,6 @@ require(
 			world.render(ctx);
 			requestAnimationFrame(render);
 		})();
-		//rainModule(world);
 		$('#gravityChangerButton').click(function () {
 			var gx = world.gravity.x;
 			var gy = world.gravity.y;
