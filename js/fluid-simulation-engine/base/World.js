@@ -96,13 +96,6 @@ define(['./Grid', '../geometry/Vector', '../geometry/LineSegment'], function (Gr
 	World.prototype.nextStep = function (dt) {
 		dt *= this.timeSpeed;
 
-		//apply gravity
-		for(var i = 0; i < this.particles.length; i++) {
-			var mass = this.particles[i].coeffs.mass;
-			this.particles[i].clearForces();
-			this.particles[i].applyForce(this.gravity.x*mass, this.gravity.y*mass);
-		}
-
 		this.applyDoubleDensityRelaxation()
 			.applyViscosity(dt)
 			.applyRepulsiveForces()
@@ -116,6 +109,7 @@ define(['./Grid', '../geometry/Vector', '../geometry/LineSegment'], function (Gr
 			this.particles[i].changeVelocityBy(dt*forces.x/mass, dt*forces.y/mass);
 			this.particles[i].clearForces();
 			this.particles[i].changeCoordsBy(dt*this.particles[i].velocity.x, dt*this.particles[i].velocity.y);
+			this.particles[i].applyForce(this.gravity.x*mass, this.gravity.y*mass);
 		}
 		return this;
 	}
