@@ -164,19 +164,11 @@ define(['./Grid', '../geometry/Vector', '../geometry/LineSegment'], function (Gr
 				var I = (1-q)*(visc_lin*u+visc_qua*u*u);
 				var Ix = (ux/u)*I;
 				var Iy = (uy/u)*I;
-				//*
+
 				if(u == 0) {
 					Ix = 0;
 					Iy = 0;
 				}
-				//*/
-				if(isNaN(Ix) || isNaN(Iy)) {
-					console.error('Error');
-					console.error(A.velocity.x, B.velocity.x);
-					console.error(u, ux, uy, I, Ix, Iy);
-				}
-				//this.particles[i].applyForce(-Ix, -Iy);
-				//this.particles[j].applyForce(Ix, Iy);
 
 				A.changeVelocityBy(-dt*Ix, -dt*Iy);
 				B.changeVelocityBy(dt*Ix, dt*Iy);
