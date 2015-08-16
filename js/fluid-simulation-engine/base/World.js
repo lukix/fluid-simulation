@@ -8,7 +8,7 @@ define(['./Grid', '../geometry/Vector', '../geometry/LineSegment'], function (Gr
 		};
 		this.particles = [];
 		this.bodies = [];
-		this.repulsiveForceSources = []; // {coords: {x: number, y: number}, strength: number}
+		this.repulsiveForceSources = []; // {coords: Vector, strength: number}
 		this.grid = new Grid(this.particles, this.coeffs.h);	//cellSize doesn't change when coeffs are changed!
 		this.respawnCoords;
 		this.isOutOfBoundsFunc = function (particle) {

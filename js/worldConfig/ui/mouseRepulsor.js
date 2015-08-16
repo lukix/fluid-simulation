@@ -1,6 +1,6 @@
-define(['jquery'], function ($) {
+define(['jquery', '../../fluid-simulation-engine/geometry/Vector'], function ($, Vector) {
 	return function (world, transform) {
-		var repulsor = {coords: {x: 0, y: 0}, strength: 0};
+		var repulsor = {coords: new Vector(0, 0), strength: 0};
 		const REPULSOR_STRENGTH = 4000;
 		world.addRepulsiveForceSource(repulsor);
 		var mouseDown = false;
