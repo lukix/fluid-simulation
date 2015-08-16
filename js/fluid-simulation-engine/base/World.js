@@ -84,6 +84,9 @@ define(['./Grid', '../geometry/Vector', '../geometry/LineSegment'], function (Gr
 		this.addParticles(particlesArr);
 		return this;
 	}
+	World.prototype.getGravity = function() {
+		return new Vector(this.gravity.x, this.gravity.y);
+	}
 	World.prototype.setGravity = function(gravity) {
 		this.gravity.x = gravity.x;
 		this.gravity.y = gravity.y;
@@ -91,6 +94,13 @@ define(['./Grid', '../geometry/Vector', '../geometry/LineSegment'], function (Gr
 	}
 	World.prototype.setIsOutOfBoundsFunc = function(func) {
 		this.isOutOfBoundsFunc = func;
+		return this;
+	}
+	World.prototype.getTimeSpeed = function() {
+		return this.timeSpeed;
+	}
+	World.prototype.setTimeSpeed = function(timeSpeed) {
+		this.timeSpeed = timeSpeed;
 		return this;
 	}
 	World.prototype.nextStep = function (dt) {
