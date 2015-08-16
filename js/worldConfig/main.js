@@ -12,13 +12,14 @@ require(
 		,'../fluid-simulation-engine/base/Body'
 		,'../fluid-simulation-engine/geometry/Vector'
 		,'./ui/tiltButton'
+		,'./ui/buttons'
 		,'./ui/mainLoop'
 		,'./ui/mouseRepulsor'
 		,'../uiCommonModules/mouseCameraMove'
 		,'../uiCommonModules/mouseCameraZoom'
 		,'../uiCommonModules/cameraSmartPoint'
 		,'./addBodies'
-	], function($, World, Particle, WaterParticle, Body, Vector, tiltButton, mainLoop, mouseRepulsor, mouseCameraMove, mouseCameraZoom, cameraSmartPoint, addBodies) {
+	], function($, World, Particle, WaterParticle, Body, Vector, buttons, mainLoop, mouseRepulsor, mouseCameraMove, mouseCameraZoom, cameraSmartPoint, addBodies) {
 		var myCanvas = document.getElementById('canvas');
 		myCanvas.width = $(myCanvas).width();
 		myCanvas.height = $(myCanvas).height();
@@ -27,12 +28,6 @@ require(
 			return false;
 		var TRANSFORM = {x: 0, y: 0, scale_x: 1, scale_y: 1};
 		ctx.setTransform(TRANSFORM.scale_x, 0, 0, TRANSFORM.scale_y, TRANSFORM.x, TRANSFORM.y);
-
-		$(window).resize(function () {
-			myCanvas.width = $(myCanvas).width();
-			myCanvas.height = $(myCanvas).height();
-			ctx.setTransform(TRANSFORM.scale_x, 0, 0, TRANSFORM.scale_y, TRANSFORM.x, TRANSFORM.y);
-		});
 
 		var world = new World();
 		addBodies(world);
@@ -49,6 +44,7 @@ require(
 		const PARTICLES_NUMBER = 1000;
 		const PARTICLES_IN_ROW = 25;
 		world.addParticlesGrid(PARTICLES_IN_ROW, PARTICLES_NUMBER/PARTICLES_IN_ROW, 50, -240, WaterParticle);
+
 		mainLoop(world);
 		(function render() {
 			ctx.save();
@@ -59,20 +55,16 @@ require(
 			world.render(ctx);
 			requestAnimationFrame(render);
 		})();
-		$('#gravityChangerButton').click(function () {
-			var gx = world.gravity.x;
-			var gy = world.gravity.y;
-			gx = gy + (gy = gx, 0);
-			world.setGravity({x: gx, y: gy});
+		$(window).resize(function () {
+			myCanvas.width = $(myCanvas).width();
+			myCanvas.height = $(myCanvas).height();
+			ctx.setTransform(TRANSFORM.scale_x, 0, 0, TRANSFORM.scale_y, TRANSFORM.x, TRANSFORM.y);
 		});
-		$('form#coeffs').submit(function () {
-			return false;
+		$('#gravityChangerButton').click(function () {
+			buttons.changeGravity(world);
 		});
 		$('#show').click(function () {
 			$('#rest').slideToggle();
-		});
-		$('#tiltButton').click(function () {
-			tiltButton(world);
 		});
 		cameraSmartPoint(ctx, TRANSFORM, myCanvas, world);
 		mouseRepulsor(world, TRANSFORM);
