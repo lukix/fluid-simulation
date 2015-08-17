@@ -1,51 +1,54 @@
 define(
   [
     'jquery'
-    ,'./mainLoop'
 		,'./buttons'
 		,'./mouseRepulsor'
 		,'../../uiCommonModules/mouseCameraMove'
 		,'../../uiCommonModules/mouseCameraZoom'
 		,'../../uiCommonModules/cameraSmartPoint'
-  ], function ($, mainLoop, buttons, mouseRepulsor, mouseCameraMove, mouseCameraZoom, cameraSmartPoint) {
-	return function (world) {
-    var ctx;
-    var TRANSFORM = {x: 0, y: 0, scale_x: 1, scale_y: 1};
-    var myCanvas = document.getElementById('canvas');
+  ], function ($, buttons, mouseRepulsor, mouseCameraMove, mouseCameraZoom, cameraSmartPoint) {
+    return function (world) {
+      return {
+        ctx: null,
+        myCanvas: null,
+        TRANSFORM: {x: 0, y: 0, scale_x: 1, scale_y: 1},
+        init: function () {
+          this.myCanvas = document.getElementById('canvas');
+          this.ctx = this.myCanvas.getContext('2d');
 
-		myCanvas.width = $(myCanvas).width();
-		myCanvas.height = $(myCanvas).height();
-		if (!(ctx = myCanvas.getContext('2d')))
-			return false;
-		ctx.setTransform(TRANSFORM.scale_x, 0, 0, TRANSFORM.scale_y, TRANSFORM.x, TRANSFORM.y);
+      		onresize(this.myCanvas, this.ctx, this.TRANSFORM);
 
-		(function render() {
-			ctx.save();
-			ctx.setTransform(1, 0, 0, 1, 0, 0);
-			ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
-			ctx.restore();
+          cameraSmartPoint(this.ctx, this.TRANSFORM, this.myCanvas, world);
+      		mouseRepulsor(world, this.TRANSFORM);
+      		mouseCameraMove(this.ctx, this.TRANSFORM);
+      		mouseCameraZoom(this.ctx, this.TRANSFORM);
+          
+          var THIS = this;
+      		$(window).resize(function () {
+            onresize(THIS.myCanvas, THIS.ctx, THIS.TRANSFORM);
+          });
+      		$('#gravityChangerButton').click(function () {
+      			buttons.changeGravity(world);
+      		});
+      		$('#show').click(function () {
+      			$('#rest').slideToggle();
+      		});
 
-			world.render(ctx);
-			requestAnimationFrame(render);
-		})();
+          function onresize (myCanvas, ctx, TRANSFORM) {
+            myCanvas.width = $(myCanvas).width();
+            myCanvas.height = $(myCanvas).height();
+            ctx.setTransform(TRANSFORM.scale_x, 0, 0, TRANSFORM.scale_y, TRANSFORM.x, TRANSFORM.y);
+          }
 
-    mainLoop(world);
-    cameraSmartPoint(ctx, TRANSFORM, myCanvas, world);
-		mouseRepulsor(world, TRANSFORM);
-		mouseCameraMove(ctx, TRANSFORM);
-		mouseCameraZoom(ctx, TRANSFORM);
+        },
+        render: function () {
+          this.ctx.save();
+          this.ctx.setTransform(1, 0, 0, 1, 0, 0);
+          this.ctx.clearRect(0, 0, this.myCanvas.width, this.myCanvas.height);
+          this.ctx.restore();
+          world.render(this.ctx);
+        }
 
-		$(window).resize(function () {
-			myCanvas.width = $(myCanvas).width();
-			myCanvas.height = $(myCanvas).height();
-			ctx.setTransform(TRANSFORM.scale_x, 0, 0, TRANSFORM.scale_y, TRANSFORM.x, TRANSFORM.y);
-		});
-		$('#gravityChangerButton').click(function () {
-			buttons.changeGravity(world);
-		});
-		$('#show').click(function () {
-			$('#rest').slideToggle();
-		});
-
-  }
+      }
+    }
 });

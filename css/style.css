@@ -26,6 +26,9 @@ html, body {
 }
 #fps {
 	font-size: 18px;
+	padding: 0;
+	margin: 0;
+	list-style-type: none;
 }
 #show {
 	margin-bottom: 5px;
