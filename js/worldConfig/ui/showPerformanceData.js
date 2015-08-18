@@ -6,7 +6,7 @@ define(['jquery'], function ($) {
 
 		var avgDts = getAvgVal(lastDts);
 		var avgFps = 1000/avgDts;
-		var avgChecks = getAvgVal(world.en);
+		var avgChecks = getAvgVal(world.getGridLoopsArr());
 		var checkTime = 1000000*avgDts/avgChecks;
 
 		updateDOM({

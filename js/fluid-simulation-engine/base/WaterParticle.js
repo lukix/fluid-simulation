@@ -6,13 +6,12 @@ define(['./Particle', '../geometry/Vector', './inheritFrom'], function (Particle
 		this.init();
 		this.coeffs = WaterParticle.coeffs;
 	}
-	
 	WaterParticle.inheritFrom(Particle);
 	WaterParticle.coeffs = {};
 	for(var i in Particle.coeffs) {
 		WaterParticle.coeffs[i] = Particle.coeffs[i];
 	}
 	WaterParticle.coeffs.mass = 0.6;
-	
+
 	return WaterParticle;
 });

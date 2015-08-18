@@ -1,15 +1,14 @@
 define(['./Grid', '../geometry/Vector', '../geometry/LineSegment'], function (Grid, Vector, LineSegment) {
 	function World() {
-		this.en = new Array(50);
 		this.gravity = new Vector(0.0, 0.5);
 		this.timeSpeed = 1.0/60;
 		this.coeffs = {
-			 h: 40				//Particles' distance from each other, at which they start interacting
+			 h: 40	//Particles' interacting distance
 		};
 		this.particles = [];
 		this.bodies = [];
-		this.repulsiveForceSources = []; // {coords: Vector, strength: number}
-		this.grid = new Grid(this.particles, this.coeffs.h);	//cellSize doesn't change when coeffs are changed!
+		this.repulsiveForceSources = [];	//{coords: Vector, strength: number}
+		this.grid = new Grid(this.particles, this.coeffs.h);
 		this.respawnCoords;
 		this.isOutOfBoundsFunc = function (particle) {
 			return false;
@@ -20,11 +19,14 @@ define(['./Grid', '../geometry/Vector', '../geometry/LineSegment'], function (Gr
 		this.respawnCoords = respawnCoords;
 		return this;
 	}
+	World.prototype.getGridLoopsArr = function () {
+		return this.grid.getLoopsArr();
+	}
 	World.prototype.setCoeffs = function (coeffs) {
 		for(var i in coeffs) {
 			this.coeffs[i] = coeffs[i];
 		}
-		this.grid.cellSize = this.coeffs.h;
+		this.grid.setCellSize(this.coeffs.h);
 		return this;
 	}
 	World.prototype.addBody = function (body) {
@@ -112,7 +114,6 @@ define(['./Grid', '../geometry/Vector', '../geometry/LineSegment'], function (Gr
 			.applyBodiesCollisions()
 			.respawnParticles();
 
-		//Apply velocity and position change
 		for(var i=0; i<this.particles.length; i++) {
 			var forces = this.particles[i].getForces();
 			var mass = this.particles[i].coeffs.mass;

@@ -4,6 +4,13 @@ define(function () {
 		this.cellSize = cellSize;
 		this.gridStart;
 		this.gridArray = [];
+		this.loopsArr = new Array(50);
+	}
+	Grid.prototype.setCellSize = function (cellSize) {
+		this.cellSize = cellSize;
+	}
+	Grid.prototype.getLoopsArr = function () {
+		return this.loopsArr.slice(0);
 	}
 	Grid.prototype.init = function () {
 		if(this.particles.length == 0)
@@ -15,7 +22,7 @@ define(function () {
 		for(var i = 0; i < this.particles.length; i++) {
 			if(this.particles[i].coords.x < this.gridStart.x)
 				this.gridStart.x = this.particles[i].coords.x;
-			
+
 			if(this.particles[i].coords.y < this.gridStart.y)
 				this.gridStart.y = this.particles[i].coords.y;
 		}
@@ -35,7 +42,7 @@ define(function () {
 	}
 	Grid.prototype.forEachPair = function (callback, context) {
 		this.update();
-		en = 0;
+		var loops = 0;
 		for(var X = 0; X < this.gridArray.length; X++) {
 			if(this.gridArray[X] === undefined)
 				continue;
@@ -53,7 +60,7 @@ define(function () {
 								if(X == x && Y==y && i==j)
 									continue;
 								callback(context, this.gridArray[X][Y][i], this.gridArray[x][y][j]);
-								en++;
+								loops++;
 							}
 						}
 					}
@@ -61,8 +68,9 @@ define(function () {
 				}
 			}
 		}
-		context.en.push(en);
-		context.en.shift();
+		//Save some performance data
+		this.loopsArr.push(loops);
+		this.loopsArr.shift();
 	}
 	return Grid;
 });

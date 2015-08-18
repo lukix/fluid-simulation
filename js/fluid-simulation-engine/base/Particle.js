@@ -11,7 +11,7 @@ define(['../geometry/Vector'], function (Vector) {
 		,p0: 5
 		,visc_lin: 0.105
 		,visc_qua: 0.055
-		,d_stick: 35		//Distance from wall, at which fluid starts sticking
+		,d_stick: 35		//Wall sticking distance
 		,k_stick: 0.01
 		,wall_friction: 0.1	//Wall sideways friction (vx *= wall_friction) (0 - max. friction; 1 - no friction)
 		,wall_normal: 0.9	//Wall bounce energy conservation
@@ -21,20 +21,6 @@ define(['../geometry/Vector'], function (Vector) {
 		this.velocity = new Vector(0.0, 0.0);
 		this.forces = new Vector(0.0, 0.0);
 		this.pressure = {normal: 0, near: 0};
-		/*
-		this.coeffs = {
-			 k: 0.2
-			,k_near: 0.6
-			,p0: 5
-			,visc_lin: 0.105
-			,visc_qua: 0.055
-			,d_stick: 35		//Distance from wall, at which fluid starts sticking
-			,k_stick: 0.01
-			,wall_friction: 0.1	//Wall sideways friction (vx *= wall_friction) (0 - max. friction; 1 - no friction)
-			,wall_normal: 0.9	//Wall bounce energy conservation
-			,mass: 1.0
-		};
-		//*/
 		return this;
 	}
 	Particle.prototype.setCoords = function (x, y) {
@@ -57,11 +43,6 @@ define(['../geometry/Vector'], function (Vector) {
 		this.velocity.y += dvy;
 		return this;
 	}
-	Particle.prototype.multipleVelocityBy = function (mvx, mvy) {
-		this.velocity.x *= mvx;
-		this.velocity.y *= mvy;
-		return this;
-	}
 	Particle.prototype.render = function (ctx) {
 		ctx.fillStyle = this.color;
 		ctx.fillRect(this.coords.x, this.coords.y, 4, 4);
@@ -80,11 +61,6 @@ define(['../geometry/Vector'], function (Vector) {
 	Particle.prototype.setForces = function (x, y) {
 		this.forces.x = x;
 		this.forces.y = y;
-		return this;
-	}
-	Particle.prototype.multipleForcesBy = function (x, y) {
-		this.forces.x *= x;
-		this.forces.y *= y;
 		return this;
 	}
 	Particle.prototype.clearForces = function () {
