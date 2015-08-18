@@ -10,9 +10,10 @@ define(['jquery'], function ($) {
 		var checkTime = 1000000*avgDts/avgChecks;
 
 		updateDOM({
-			  avgChecks: {value: avgChecks, text: "checks"}
-			 ,checkTime: {value: checkTime, text: "ns/check"}
-			 ,particlesNumber: {value: world.particles.length, text: "particles"}
+			 fps: {value: avgFps, text: "fps"}
+			,avgChecks: {value: avgChecks, text: "checks"}
+			,checkTime: {value: checkTime, text: "ns/check"}
+			,particlesNumber: {value: world.particles.length, text: "particles"}
 		});
 
 	}
