@@ -3,11 +3,8 @@ define(['./LineSegment', './Vector'], function (LineSegment, Vector) {
 		this.coords = new Vector(0, 0);
 		this.angle = 0;
 		this.sides = [];
-		if(arguments.length <= 2) {
-			//throw new Error("Trying to create Polygon with "+arguments.length+" vertices");
-		}
 		for(var i = 0; i < arguments.length; i++) {
-			this.sides.push(new LineSegment(arguments[i], arguments[(i+1)%arguments.length]));
+			this.sides.push(new LineSegment(arguments[i], arguments[(i+1) % arguments.length]));
 		}
 	}
 	Polygon.prototype.setCoords = function (coords) {
@@ -44,7 +41,7 @@ define(['./LineSegment', './Vector'], function (LineSegment, Vector) {
 		}
 		return maxPoint;
 	}
-	Polygon.prototype.containsPoint = function (point, absolute) {	//May not work for points on the side of polygon //Default: absolute = true;
+	Polygon.prototype.containsPoint = function (point, absolute) {	//May not work for points on the side of the polygon //Default: absolute = true;
 		var relativePoint = new Vector(point);
 		if(typeof absolute === "undefined" || absolute) {
 			relativePoint.subtract(this.coords);
@@ -58,7 +55,7 @@ define(['./LineSegment', './Vector'], function (LineSegment, Vector) {
 				intersections++;
 			}
 		}
-		return !!(intersections%2);
+		return !!(intersections % 2);
 	}
 	Polygon.prototype.getVolume = function () {		//Faster and more precisious method needed
 		var minPoint = this.minPoint(false);
@@ -116,7 +113,7 @@ define(['./LineSegment', './Vector'], function (LineSegment, Vector) {
 		}
 		return this.sides[closestSideIndex];
 	}
-	Polygon.prototype.getExtractedPoint = function (point) {	//Method don't work if point is already outside of the poloygon	//Absolute
+	Polygon.prototype.getExtractedPoint = function (point) {	//Method doesn't work if point is already outside of the polygon	//Absolute
 		const margin = 0.001;
 		var relativePoint = new Vector(point).subtract(this.coords);
 		var closestSide = this.getClosestSide(point);
@@ -125,31 +122,5 @@ define(['./LineSegment', './Vector'], function (LineSegment, Vector) {
 		relativePoint.add(this.coords);
 		return new Vector(relativePoint).add(displacementVector);
 	}
-	/*
-	Polygon.prototype.getExtractedPoint = function (point) {	//Method don't work if point is already outside of the poloygon	//Absolute
-		var relativePoint = new Vector(point).subtract(this.coords);
-		const margin = 0.01;
-		var closestSideIndex = 0;
-		var ep;
-		var i = 0;
-		while((ep = this.sides[i].getProjectedPoint(relativePoint)) == null) {
-			i++
-		};
-		var minDistance = ep.getDistance(relativePoint);
-		for(; i < this.sides.length; i++) {
-			ep = this.sides[i].getProjectedPoint(relativePoint);
-			if(ep != null) {
-				if(ep.getDistance(relativePoint) < minDistance) {
-					minDistance = ep.getDistance(relativePoint);
-					closestSideIndex = i;
-				}
-			}
-		}
-		var edgePoint = this.sides[closestSideIndex].getProjectedPoint(relativePoint);
-		var displacementVector = edgePoint.subtract(relativePoint).extendBy(margin);
-		relativePoint.add(this.coords);
-		return new Vector(relativePoint).add(displacementVector);
-	}
-	*/
 	return Polygon;
 });

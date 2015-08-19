@@ -27,7 +27,7 @@ define(['./Vector'], function (Vector) {
 				eq1 = eq2;
 				eq2 = eq_temp;
 			}
-			//Now First lineSegment is veritcal and second is not
+			//Now first lineSegment is veritcal and second is not
 			crossingPoint.x = -eq1.C/eq1.A;
 			crossingPoint.y = -(eq2.A*crossingPoint.x+eq2.C)/eq2.B;
 			if(!this.containsPoint(crossingPoint) || !lineSegment.containsPoint(crossingPoint)) {
@@ -62,14 +62,8 @@ define(['./Vector'], function (Vector) {
 			}
 		}
 		else if(eq.A == 0) {	//Horizontal
-			//console.log('asa');
 			projectedPoint.x = point.x;
 			projectedPoint.y = -eq.C/eq.B;
-			/*
-			console.log(Math.min(this.p1.x, this.p2.x));
-			console.log(Math.max(this.p1.x, this.p2.x));
-			console.log(projectedPoint.x);
-			*/
 			if(!(projectedPoint.x >= Math.min(this.p1.x, this.p2.x) && projectedPoint.x <= Math.max(this.p1.x, this.p2.x))) {
 				projectedPoint = null;
 			}
@@ -77,13 +71,13 @@ define(['./Vector'], function (Vector) {
 		else {
 			var a1 = -eq.A/eq.B;
 			var b1 = -eq.C;
-			
+
 			var a2 = -1/a1;
 			var b2 = point.y - a2*point.x;
-			
+
 			projectedPoint.x = (b2-b1)/(a1-a2);
 			projectedPoint.y = a1*projectedPoint.x + b1;
-			
+
 			var isIn = (
 					projectedPoint.x >= Math.min(this.p1.x, this.p2.x)
 				&&	projectedPoint.x <= Math.max(this.p1.x, this.p2.x)
