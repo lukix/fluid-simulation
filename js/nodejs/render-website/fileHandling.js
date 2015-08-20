@@ -1,13 +1,13 @@
-define([
-	'jquery'
-	,'./DataProvider'
-	,'./render'
-	,'../../fluid-simulation-engine/base/World'
-	,'../addBodies'
-	,'../../uiCommonModules/cameraSmartPoint'
-], function ($, DataProvider, render, World, addBodies, cameraSmartPoint) {
-	return function (ctx, myCanvas, TRANSFORM) {
-		var dataProvider;
+define(
+  [
+    './dataProvider',
+    '../../fluid-simulation-engine/base/World'
+    ,'../addBodies'
+    ,'../../uiCommonModules/cameraSmartPoint'
+    ,'./mainLoop'
+  ], function (DataProvider, World, addBodies, cameraSmartPoint, mainLoop) {
+	return function(ctx, myCanvas, TRANSFORM) {
+    var dataProvider;
 		var isReady = false;
 		if(!(window.File && window.FileReader && window.FileList && window.Blob))
 			return false;
@@ -24,7 +24,7 @@ define([
 				var world = new World();
 				addBodies(world);
 				cameraSmartPoint(ctx, TRANSFORM, myCanvas, world);
-				render(dataProvider, world, ctx, myCanvas, function () {
+				mainLoop(dataProvider, world, ctx, myCanvas, function () {
 					$('#filePanel').fadeIn();
 					setReadiness(false, dataProvider.file.name);
 					dataProvider = new DataProvider(dataProvider.file, onDataProviderReady);
@@ -50,6 +50,6 @@ define([
 			event.stopPropagation();
 			event.preventDefault();
 		}
-		return true;
+    return true;
 	}
 });

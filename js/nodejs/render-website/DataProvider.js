@@ -2,7 +2,7 @@ define([], function () {
 		function DataProvider(file, readyCallback) {
 			this.file = file;
 			this.bytesRead = 0;
-			this.nextFrameParticlesNumber = 0;
+			this.nextFrameParticlesNumber;
 			this.simulationData = {
 				 frameTime: null
 				,frames: []
