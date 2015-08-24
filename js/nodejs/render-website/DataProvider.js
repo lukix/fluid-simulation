@@ -2,12 +2,15 @@ define([], function () {
 		function DataProvider(file, readyCallback) {
 			this.file = file;
 			this.bytesRead = 0;
+
 			this.nextFrameParticlesNumber;
+			this.nextFrameSize;
+
 			this.simulationData = {
 				 frameTime: null
 				,frames: []
 			};
-			this.loadedFrames = 40;
+			this.loadedFrames = 5;
 			this.endOfData = false;
 			var THIS = this;
 			this.init(function () {
@@ -19,13 +22,14 @@ define([], function () {
 		}
 		DataProvider.prototype.init = function (callback) {
 			var reader = new FileReader(this.file);
-			this.readNextSlice(reader, 2*4);
+			this.readNextSlice(reader, 3*4);
 			var THIS = this;
 			reader.onload = function (e) {
 				var buffer = e.target.result;
 				var uint32View = new Uint32Array(buffer);
 				THIS.simulationData.frameTime = uint32View[0];
-				THIS.nextFrameParticlesNumber = uint32View[1];
+				THIS.nextFrameSize = uint32View[1];
+				THIS.nextFrameParticlesNumber = uint32View[2];
 				callback();
 			}
 		}
@@ -35,30 +39,53 @@ define([], function () {
 				return;
 			}
 			var reader = new FileReader(this.file);
-			this.readNextSlice(reader, 4*(3*this.nextFrameParticlesNumber+1));
+			this.readNextSlice(reader, this.nextFrameSize);
 			var THIS = this;
 			reader.onload = function (e) {
 				var buffer = e.target.result;
-				var uint32View = new Uint32Array(buffer);
-				var float32View = new Float32Array(buffer);
-				var frame = [];
-				for(var i = 0; i < THIS.nextFrameParticlesNumber; i++) {
-					if(i*3+2 >= uint32View.length)
-						THIS.endOfData = true;
-					frame.push({
-						 x: float32View[i*3+0]
-						,y: float32View[i*3+1]
-						,color: "#"+DataProvider.decimalToHex(uint32View[i*3+2], 6)
-					});
+				if(buffer.byteLength < THIS.nextFrameSize) {
+					THIS.endOfData = true;
 				}
-				THIS.simulationData.frames.unshift(frame);
-				THIS.nextFrameParticlesNumber = uint32View[buffer.byteLength/4-1];
-				if(THIS.simulationData.frames.length < THIS.loadedFrames) {
-					callback.call(this, false, true);
-					THIS.readNextSlice(reader, 4*(3*THIS.nextFrameParticlesNumber+1));
+				else {
+					var uint32View = new Uint32Array(buffer);
+					var float32View = new Float32Array(buffer);
+					var frame = {
+						 particles: []
+						,bodies: []
+					};
+					var bodiesPieceSize = (THIS.nextFrameSize - THIS.nextFrameParticlesNumber * 3 * 4 - 2 * 4) / 4;
+					var piecesRead = 0;
+					while(piecesRead < bodiesPieceSize) {
+						var numberOfVerticles = uint32View[piecesRead];
+						piecesRead++;
+						var body = [];
+						for(var j = 0; j < numberOfVerticles; j++) {
+							body.push({
+								 x: float32View[piecesRead]
+								,y: float32View[piecesRead + 1]
+							});
+							piecesRead += 2;
+						}
+						frame.bodies.push(body);
+					}
+					var a = true;
+					for(var i = 0; i < THIS.nextFrameParticlesNumber; i++) {
+						frame.particles.push({
+							 x: float32View[bodiesPieceSize + i*3+0]
+							,y: float32View[bodiesPieceSize + i*3+1]
+							,color: "#"+DataProvider.decimalToHex(uint32View[bodiesPieceSize + i*3+2], 6)
+						});
+					}
+					THIS.simulationData.frames.unshift(frame);
+					THIS.nextFrameSize = uint32View[buffer.byteLength/4-2];
+					THIS.nextFrameParticlesNumber = uint32View[buffer.byteLength/4-1];
+					if(THIS.simulationData.frames.length < THIS.loadedFrames) {
+						callback.call(this, false, true);
+						THIS.readNextSlice(reader, THIS.nextFrameSize);
+					}
+					else
+						callback.call(this, true, true);
 				}
-				else
-					callback.call(this, true, true);
 			}
 		}
 		DataProvider.prototype.readNextSlice = function (reader, size) {

@@ -1,11 +1,11 @@
 define(
   [
-    './dataProvider',
-    '../../fluid-simulation-engine/base/World'
-    ,'../addBodies'
+    './dataProvider'
+    ,'../../fluid-simulation-engine/geometry/Polygon'
+    ,'../../fluid-simulation-engine/geometry/Vector'
     ,'../../uiCommonModules/cameraSmartPoint'
     ,'./mainLoop'
-  ], function (DataProvider, World, addBodies, cameraSmartPoint, mainLoop) {
+  ], function (DataProvider, Polygon, Vector, cameraSmartPoint, mainLoop) {
 	return function(ctx, myCanvas, TRANSFORM) {
     var dataProvider;
 		var isReady = false;
@@ -21,10 +21,7 @@ define(
 		$('#filePanel>div').click(function () {
 			if(isReady) {
 				$('#filePanel').fadeOut();
-				var world = new World();
-				addBodies(world);
-        cameraSmartPoint(ctx, TRANSFORM, myCanvas, world.bodies);
-				mainLoop(dataProvider, world, ctx, myCanvas, function () {
+				mainLoop(dataProvider, ctx, myCanvas, function () {
 					$('#filePanel').fadeIn();
 					setReadiness(false, dataProvider.file.name);
 					dataProvider = new DataProvider(dataProvider.file, onDataProviderReady);
@@ -33,6 +30,11 @@ define(
 		});
 		function onDataProviderReady() {
 			setReadiness(true, dataProvider.file.name);
+      var polygons = [];
+      for(var i = 0; i < dataProvider.simulationData.frames[0].bodies.length; i++) {
+        polygons.push(new Polygon(dataProvider.simulationData.frames[0].bodies[i]));
+      }
+      cameraSmartPoint(ctx, TRANSFORM, myCanvas, polygons);
 		}
 		function setReadiness(ready, fileName) {
 			if(ready) {
