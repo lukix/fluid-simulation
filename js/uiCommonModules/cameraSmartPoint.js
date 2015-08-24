@@ -1,10 +1,10 @@
-define([], function () {
-	return function (ctx, TRANSFORM, myCanvas, world) {
-		const MARGIN = 1.1;
-		if(world.bodies.length == 0)
+define(['../fluid-simulation-engine/geometry/Polygon'], function (Polygon) {
+	return function (ctx, TRANSFORM, myCanvas, polygonsArr) {
+		const MARGIN = 1.05;
+		if(polygonsArr.length == 0)
 			return false;
-		var minPoint = world.getBodiesMinPoint();
-		var maxPoint = world.getBodiesMaxPoint();
+		var minPoint = Polygon.getMinPointOfPolygonsArray(polygonsArr);
+		var maxPoint = Polygon.getMaxPointOfPolygonsArray(polygonsArr);
 		var realWidth = (maxPoint.x - minPoint.x);
 		var realHeight = (maxPoint.y - minPoint.y);
 		var scale_x = myCanvas.width / (realWidth * MARGIN);

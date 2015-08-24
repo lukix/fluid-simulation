@@ -1,10 +1,20 @@
 define(['./LineSegment', './Vector'], function (LineSegment, Vector) {
-	function Polygon() {
+	function Polygon(arr) {
 		this.coords = new Vector(0, 0);
 		this.angle = 0;
 		this.sides = [];
-		for(var i = 0; i < arguments.length; i++) {
-			this.sides.push(new LineSegment(arguments[i], arguments[(i+1) % arguments.length]));
+		var verticlesArr = arr;
+		if(arguments.length > 1) {
+			verticlesArr = [];
+			verticlesArr.unshift(arr);
+			for(var i = 0; i < arguments.length; i++) {
+				verticlesArr.unshift(arguments[i]);
+			}
+		}
+		if(arguments.length > 0 || typeof arr !== "undefined") {
+			for(var i = 0; i < verticlesArr.length; i++) {
+				this.sides.push(new LineSegment(verticlesArr[i], verticlesArr[(i+1) % verticlesArr.length]));
+			}
 		}
 	}
 	Polygon.prototype.setCoords = function (coords) {
@@ -121,6 +131,32 @@ define(['./LineSegment', './Vector'], function (LineSegment, Vector) {
 		var displacementVector = edgePoint.subtract(relativePoint).extendBy(margin);
 		relativePoint.add(this.coords);
 		return new Vector(relativePoint).add(displacementVector);
+	}
+	Polygon.getMinPointOfPolygonsArray = function (polygonArr) {
+		if(polygonArr.length == 0)
+			return null;
+		var minPoint = polygonArr[0].minPoint();
+		for(var i = 0; i < polygonArr.length; i++) {
+			var min = polygonArr[i].minPoint();
+			if(min.x < minPoint.x)
+				minPoint.x = min.x;
+			if(min.y < minPoint.y)
+				minPoint.y = min.y;
+		}
+		return minPoint;
+	}
+	Polygon.getMaxPointOfPolygonsArray = function (polygonArr) {
+		if(polygonArr.length == 0)
+			return null;
+		var maxPoint = polygonArr[0].maxPoint();
+		for(var i = 0; i < polygonArr.length; i++) {
+			var max = polygonArr[i].maxPoint();
+			if(max.x > maxPoint.x)
+				maxPoint.x = max.x;
+			if(max.y > maxPoint.y)
+				maxPoint.y = max.y;
+		}
+		return maxPoint;
 	}
 	return Polygon;
 });

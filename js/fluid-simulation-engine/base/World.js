@@ -1,4 +1,10 @@
-define(['./Grid', '../geometry/Vector', '../geometry/LineSegment'], function (Grid, Vector, LineSegment) {
+define(
+	[
+		 './Grid'
+		,'../geometry/Vector'
+		,'../geometry/LineSegment'
+		,'../geometry/Polygon'
+	], function (Grid, Vector, LineSegment, Polygon) {
 	function World() {
 		this.gravity = new Vector(0.0, 0.5);
 		this.timeSpeed = 1.0/60;
@@ -34,30 +40,10 @@ define(['./Grid', '../geometry/Vector', '../geometry/LineSegment'], function (Gr
 		return this;
 	}
 	World.prototype.getBodiesMinPoint = function () {
-		if(this.bodies.length == 0)
-			return null;
-		var minPoint = this.bodies[0].minPoint();
-		for(var i = 0; i < this.bodies.length; i++) {
-			var min = this.bodies[i].minPoint();
-			if(min.x < minPoint.x)
-				minPoint.x = min.x;
-			if(min.y < minPoint.y)
-				minPoint.y = min.y;
-		}
-		return minPoint;
+		return Polygon.getMinPointOfPolygonsArray(this.bodies);
 	}
 	World.prototype.getBodiesMaxPoint = function () {
-		if(this.bodies.length == 0)
-			return null;
-		var maxPoint = this.bodies[0].maxPoint();
-		for(var i = 0; i < this.bodies.length; i++) {
-			var max = this.bodies[i].maxPoint();
-			if(max.x > maxPoint.x)
-				maxPoint.x = max.x;
-			if(max.y > maxPoint.y)
-				maxPoint.y = max.y;
-		}
-		return maxPoint;
+		return Polygon.getMaxPointOfPolygonsArray(this.bodies);
 	}
 	World.prototype.addRepulsiveForceSource = function (repulsiveForceSource) {
 		this.repulsiveForceSources.push(repulsiveForceSource);

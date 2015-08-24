@@ -23,7 +23,7 @@ define(
 				$('#filePanel').fadeOut();
 				var world = new World();
 				addBodies(world);
-				cameraSmartPoint(ctx, TRANSFORM, myCanvas, world);
+        cameraSmartPoint(ctx, TRANSFORM, myCanvas, world.bodies);
 				mainLoop(dataProvider, world, ctx, myCanvas, function () {
 					$('#filePanel').fadeIn();
 					setReadiness(false, dataProvider.file.name);

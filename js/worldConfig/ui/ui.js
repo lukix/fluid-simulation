@@ -18,11 +18,11 @@ define(
 
       		onresize(this.myCanvas, this.ctx, this.TRANSFORM);
 
-          cameraSmartPoint(this.ctx, this.TRANSFORM, this.myCanvas, world);
+          cameraSmartPoint(this.ctx, this.TRANSFORM, this.myCanvas, world.bodies);
       		mouseRepulsor(world, this.TRANSFORM);
       		mouseCameraMove(this.ctx, this.TRANSFORM);
       		mouseCameraZoom(this.ctx, this.TRANSFORM);
-          
+
           var THIS = this;
       		$(window).resize(function () {
             onresize(THIS.myCanvas, THIS.ctx, THIS.TRANSFORM);
