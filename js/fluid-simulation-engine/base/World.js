@@ -57,13 +57,13 @@ define(
 		return this;
 	}
 	World.prototype.addParticlesGrid = function (X, Y, startX, startY, particleClass) {
-		var space = 0.355;
+		var space = 0.340;
 		var particlesArr = [];
 		for(var x = 0; x < X; x++) {
 			for(var y = 0; y < Y; y++) {
 				particlesArr.push(
 					new particleClass(
-						 startX + x * this.coeffs.h * space
+						 startX + (x + (y % 2)/2) * this.coeffs.h * space 
 						,startY + y * this.coeffs.h * space
 					)
 				);
