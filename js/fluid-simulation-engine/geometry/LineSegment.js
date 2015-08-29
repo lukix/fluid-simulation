@@ -2,8 +2,13 @@ define(['./Vector'], function (Vector) {
 	function LineSegment(point1, point2) {
 		this.p1 = point1;
 		this.p2 = point2;
+		this.linearEquation = this.calculateLinearEquation();
+		this.unitVector = this.calculateUnitVector();
 	}
 	LineSegment.prototype.getLinearEquation = function() {	//Ax + By + C = 0
+		return this.linearEquation;
+	}
+	LineSegment.prototype.calculateLinearEquation = function() {	//Ax + By + C = 0
 		var point1, point2;
 		if(this.p2.x > this.p1.x) {
 			point1 = new Vector(this.p1);
@@ -29,9 +34,12 @@ define(['./Vector'], function (Vector) {
 			eq[i] /= k;
 		return eq;
 	}
-	LineSegment.prototype.getUnitVector = function() {
+	LineSegment.prototype.calculateUnitVector = function() {
 		var vec = new Vector(this.p2).subtract(this.p1);
 		return vec.multiplyBy(1/vec.getLength());
+	}
+	LineSegment.prototype.getUnitVector = function() {
+		return this.unitVector;
 	}
 	LineSegment.prototype.crossingPoint = function(lineSegment) { //returns null if crossing point doesn't exist
 		var eq1 = this.getLinearEquation();
@@ -63,11 +71,15 @@ define(['./Vector'], function (Vector) {
 		return crossingPoint;
 	}
 	LineSegment.prototype.containsPoint = function(point) {	//Warning! Method only checks if point is within rectangle made of LineSegment's edge points
+		var minX = Math.min(this.p1.x, this.p2.x);
+		var minY = Math.min(this.p1.y, this.p2.y);
+		var maxX = Math.max(this.p1.x, this.p2.x);
+		var maxY = Math.max(this.p1.y, this.p2.y)
 		return (
-				point.x >= Math.min(this.p1.x, this.p2.x)
-			&&	point.x <= Math.max(this.p1.x, this.p2.x)
-			&&	point.y >= Math.min(this.p1.y, this.p2.y)
-			&&	point.y <= Math.max(this.p1.y, this.p2.y)
+				point.x >= minX
+			&&	point.x <= maxX
+			&&	point.y >= minY
+			&&	point.y <= maxY
 		);
 	}
 	LineSegment.prototype.getProjectedPoint = function(point) {
