@@ -4,11 +4,30 @@ define(['./Vector'], function (Vector) {
 		this.p2 = point2;
 	}
 	LineSegment.prototype.getLinearEquation = function() {	//Ax + By + C = 0
-		return {
-			A: this.p2.y - this.p1.y,
-			B: this.p1.x - this.p2.x,
-			C: (this.p2.x - this.p1.x)*this.p1.y - (this.p2.y - this.p1.y)*this.p1.x
+		var point1, point2;
+		if(this.p2.x > this.p1.x) {
+			point1 = new Vector(this.p1);
+			point2 = new Vector(this.p2);
 		}
+		else {
+			point1 = new Vector(this.p2);
+			point2 = new Vector(this.p1);
+		}
+		var eq = {
+			A: point2.y - point1.y,
+			B: point1.x - point2.x,
+			C: (point2.x - point1.x) * point1.y - (point2.y - point1.y) * point1.x
+		}
+		var k = 1;
+		for(var i in eq) {
+			if(eq[i] != 0) {
+				k = eq[i];
+				break;
+			}
+		}
+		for(var i in eq)
+			eq[i] /= k;
+		return eq;
 	}
 	LineSegment.prototype.getUnitVector = function() {
 		var vec = new Vector(this.p2).subtract(this.p1);
@@ -70,7 +89,7 @@ define(['./Vector'], function (Vector) {
 		}
 		else {
 			var a1 = -eq.A/eq.B;
-			var b1 = -eq.C;
+			var b1 = -eq.C/eq.B;
 
 			var a2 = -1/a1;
 			var b2 = point.y - a2*point.x;
@@ -78,13 +97,7 @@ define(['./Vector'], function (Vector) {
 			projectedPoint.x = (b2-b1)/(a1-a2);
 			projectedPoint.y = a1*projectedPoint.x + b1;
 
-			var isIn = (
-					projectedPoint.x >= Math.min(this.p1.x, this.p2.x)
-				&&	projectedPoint.x <= Math.max(this.p1.x, this.p2.x)
-				&&	projectedPoint.y >= Math.min(this.p1.y, this.p2.y)
-				&&	projectedPoint.y <= Math.max(this.p1.y, this.p2.y)
-			);
-			if(!isIn) {
+			if(!this.containsPoint(projectedPoint)) {
 				projectedPoint = null;
 			}
 		}

@@ -1,10 +1,28 @@
-require(['../fluid-simulation-engine/geometry/LineSegment', '../fluid-simulation-engine/geometry/Polygon', '../fluid-simulation-engine/geometry/Vector', '../fluid-simulation-engine/base/Particle'], function(LineSegment, Polygon, Vector, Particle) {
+require(
+	[
+		 '../fluid-simulation-engine/geometry/LineSegment'
+		,'../fluid-simulation-engine/geometry/Polygon'
+		,'../fluid-simulation-engine/geometry/Vector'
+		,'../fluid-simulation-engine/base/Particle'
+	], function(LineSegment, Polygon, Vector, Particle) {
 		QUnit.assert.close = function(number, expected, relError, message) {
 			var margin = relError*expected;
 			var result = number >= expected-margin && number <= expected+margin;
 			this.push(result, number, expected, message);
 		}
+		QUnit.test("LineSegment.getLinearEquation", function (assert) {
+			var line = new LineSegment(
+				 new Vector(25, -50)
+				,new Vector(50, 0)
+			);
+			assert.propEqual(line.getLinearEquation(), {A: 1, B: -0.5, C: -50});
 
+			var line = new LineSegment(
+				 new Vector(50, 0)
+				,new Vector(25, -50)
+			);
+			assert.propEqual(line.getLinearEquation(), {A: 1, B: -0.5, C: -50});
+		});
 		QUnit.test("LineSegment.crossingPoint", function (assert) {
 			var a = new LineSegment({x: 0, y: 0}, {x: 10, y: 10});
 			var b = new LineSegment({x: 10, y: 0}, {x: 0, y: 10});
@@ -62,6 +80,37 @@ require(['../fluid-simulation-engine/geometry/LineSegment', '../fluid-simulation
 			var a = new LineSegment({x: 25, y: 25}, {x: 25, y: -25});
 			var p = {x: -12, y: -26};
 			assert.equal(a.getProjectedPoint(p), null);
+
+			var line = new LineSegment(
+				new Vector(0, 0)
+				,new Vector(25, -50)
+		 	);
+			var point = new Vector(60, -45);
+			assert.equal(line.getProjectedPoint(point), null);
+
+			var line = new LineSegment(
+				new Vector(25, -50)
+				,new Vector(50, 0)
+			);
+			var point = new Vector(90, -45);
+			assert.propEqual(line.getProjectedPoint(point), new Vector(40, -20));
+		});
+		QUnit.test("Polygon.costructor", function (assert) {
+			var polygon = new Polygon(
+				 new Vector(0, 0)
+				,new Vector(0, 4)
+				,new Vector(4, 4)
+				,new Vector(4, 0)
+			).setCoords(new Vector(0, 0));
+			assert.equal(polygon.sides.length, 4);
+
+			var polygon = [
+				 new Vector(0, 0)
+				,new Vector(0, 4)
+				,new Vector(4, 4)
+				,new Vector(4, 0)
+			];
+			assert.equal(new Polygon(polygon).sides.length, 4);
 		});
 		QUnit.test("Polygon.minPoint", function (assert) {
 			var p = new Polygon(
@@ -171,7 +220,7 @@ require(['../fluid-simulation-engine/geometry/LineSegment', '../fluid-simulation
 			assert.propEqual(vec, new Vector(2, 0));
 		});
 
-		QUnit.test("Vector.getClosestSide", function (assert) {
+		QUnit.test("Polygon.getClosestSide", function (assert) {
 			var polygon = new Polygon(
 				 new Vector(0, 0)
 				,new Vector(0, 4)
@@ -195,16 +244,60 @@ require(['../fluid-simulation-engine/geometry/LineSegment', '../fluid-simulation
 				,new Vector(25, -25)
 				,new Vector(-25, -25)
 				,new Vector(-25, 25)
-			);//.setCoords(new Vector(25, 500));
-			//var point = new Vector(13.27869254624672, 473.6935763135761);
+			);
 			var point = new Vector(-12, -26);
-			console.log('Here:');
 			assert.propEqual(polygon.getClosestSide(point).p1, new Vector(25, -25));
 			assert.propEqual(polygon.getClosestSide(point).p2, new Vector(-25, -25));
 
+			var polygon = new Polygon([
+				new Vector(0, 0)
+				,new Vector(25, -50)
+			 ,new Vector(50, 0)
+			 ,new Vector(50, 50)
+			 ,new Vector(0, 50)
+		 	]);
+			var point = new Vector(60, -25);
+			assert.propEqual(polygon.getClosestSide(point).p1, new Vector(25, -50));
+			assert.propEqual(polygon.getClosestSide(point).p2, new Vector(50, 0));
+
 		});
 
-		QUnit.test("Vector.getExtractedPoint", function (assert) {	//Poor test! :(
+		QUnit.test("Polygon.containsPoint", function (assert) {
+			var point = new Vector(2, 2);
+			var polygon = new Polygon(
+				 new Vector(0, 0)
+				,new Vector(0, 4)
+				,new Vector(4, 4)
+				,new Vector(4, 0)
+			).setCoords(new Vector(1, 1));
+			assert.ok(polygon.containsPoint(point));
+
+			var circle = (function () {
+				var R = 1;
+				var resolution = 4;
+				var circle = [];
+				for(var i = 0; i < 2*resolution; i++) {
+					circle.push(
+						new Vector(
+							 Math.cos(Math.PI/2-i*Math.PI/resolution)*R
+							,R-Math.sin(Math.PI/2-i*Math.PI/resolution)*R
+						)
+					);
+				}
+				return circle;
+			})();
+			var circlePolygon = new Polygon(circle).setCoords(new Vector(0, -1));
+			assert.ok(circlePolygon.containsPoint(new Vector(0, 0)));
+			assert.ok(circlePolygon.containsPoint(new Vector(0.65, 0.65)));
+			assert.ok(circlePolygon.containsPoint(new Vector(0, 0.8)));
+			assert.ok(circlePolygon.containsPoint(new Vector(0.8, 0)));
+			assert.ok(circlePolygon.containsPoint(new Vector(-0.65, -0.60)));
+			assert.ok(circlePolygon.containsPoint(new Vector(0, -0.8)));
+
+			assert.notOk(circlePolygon.containsPoint(new Vector(1.2, 1.2)));
+		});
+
+		QUnit.test("Polygon.getExtractedPoint", function (assert) {	//Poor test! :(
 			var polygon = new Polygon(
 				 new Vector(0, 0)
 				,new Vector(0, 4)

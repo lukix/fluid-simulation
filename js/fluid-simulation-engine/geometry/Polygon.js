@@ -6,9 +6,8 @@ define(['./LineSegment', './Vector'], function (LineSegment, Vector) {
 		var verticlesArr = arr;
 		if(arguments.length > 1) {
 			verticlesArr = [];
-			verticlesArr.unshift(arr);
 			for(var i = 0; i < arguments.length; i++) {
-				verticlesArr.unshift(arguments[i]);
+				verticlesArr.push(arguments[i]);
 			}
 		}
 		if(arguments.length > 0 || typeof arr !== "undefined") {
@@ -57,7 +56,7 @@ define(['./LineSegment', './Vector'], function (LineSegment, Vector) {
 			relativePoint.subtract(this.coords);
 		}
 		var minPoint = this.minPoint();
-		var outsidePoint = new Vector(minPoint.x-1.23456789, minPoint.y-1.23456789);
+		var outsidePoint = new Vector(minPoint.x-1.23456789, minPoint.y-1.98765431);
 		var ray = new LineSegment(outsidePoint, relativePoint);
 		var intersections = 0;
 		for(var i = 0; i < this.sides.length; i++) {
