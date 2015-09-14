@@ -4,6 +4,7 @@ define(['./Vector'], function (Vector) {
 		this.p2 = point2;
 		this.linearEquation = this.calculateLinearEquation();
 		this.unitVector = this.calculateUnitVector();
+		this.length = this.calculateLength();
 	}
 	LineSegment.prototype.getLinearEquation = function() {	//Ax + By + C = 0
 		return this.linearEquation;
@@ -40,6 +41,12 @@ define(['./Vector'], function (Vector) {
 	}
 	LineSegment.prototype.getUnitVector = function() {
 		return this.unitVector;
+	}
+	LineSegment.prototype.calculateLength = function() {
+		return this.p1.getDistance(this.p2);
+	}
+	LineSegment.prototype.getLength = function() {
+		return this.length;
 	}
 	LineSegment.prototype.crossingPoint = function(lineSegment) { //returns null if crossing point doesn't exist
 		var eq1 = this.getLinearEquation();

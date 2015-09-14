@@ -175,32 +175,49 @@ define(
 	}
 	World.prototype.applyBodiesCollisions = function () {
 		for(var i = 0; i < this.particles.length; i++) {
+			var summarySth = 0;
+			var summaryForce = new Vector(0, 0);
 			for(var j = 0; j < this.bodies.length; j++) {
-				var closestSide = this.bodies[j].getClosestSide(this.particles[i].coords);
-				if(closestSide != null) {
-					var relativeCoords = new Vector(this.particles[i].coords).subtract(this.bodies[j].coords);
-					var projectedPoint = closestSide.getProjectedPoint(relativeCoords);
-					projectedPoint.add(this.bodies[j].coords);
-					var r = projectedPoint.getDistance(this.particles[i].coords);
-					if(r < this.particles[i].coeffs.d_stick) {
-						var F_stick =  this.particles[i].coeffs.k_stick * r * (1 - (r /  this.particles[i].coeffs.d_stick));
-						var force = new LineSegment(projectedPoint, this.particles[i].coords).getUnitVector().multiplyBy(F_stick);
-						if(this.bodies[j].containsPoint(this.particles[i].coords)) {
-							this.particles[i].coords = this.bodies[j].getExtractedPoint(this.particles[i].coords);
-							var vn = this.particles[i].velocity.getNormalVector(closestSide.getUnitVector());
-							var vt = this.particles[i].velocity.getTangentVector(closestSide.getUnitVector());
-							vt.multiplyBy(this.particles[i].coeffs.wall_friction);
-							vn.invert().multiplyBy(this.particles[i].coeffs.wall_normal);
-							var fn = this.particles[i].forces.getNormalVector(closestSide.getUnitVector());
-							var ft = this.particles[i].forces.getTangentVector(closestSide.getUnitVector());
-							ft.multiplyBy(this.particles[i].coeffs.wall_friction);
-							fn.invert().multiplyBy(this.particles[i].coeffs.wall_normal);
-							this.particles[i].velocity = vt.add(vn);
-							this.particles[i].forces = ft.add(fn);
-						}
+				var vectors = this.bodies[j].getPotentialStickingForceVectors(this.particles[i]);
+				var shortestVector = vectors[vectors.length - 1];
+				var shortestLength = shortestVector.getLength();
+				for(var k = vectors.length - 2; k >= 0; k--) {
+					var length = vectors[k].getLength();
+					if(length < shortestLength) {
+						shortestVector = vectors[k];
+						shortestLength = shortestVector.getLength();
+					}
+					if(length > this.particles[i].coeffs.d_stick) {
+						vectors.splice(k, 1);
 					}
 				}
+				for(var k = 0; k < vectors.length; k++) {
+					var r = vectors[k].getLength();
+					if(r < 35) {
+						var a = r * (1 - (r /  this.particles[i].coeffs.d_stick));
+						var F_stick = a * a;
+						var force = vectors[k].multiplyBy(F_stick / r);
+						summarySth += a;
+						summaryForce.add(force);
+					}
+				}
+				if(shortestLength < 35 && this.bodies[j].containsPoint(this.particles[i].coords)) {
+					this.particles[i].coords = this.bodies[j].getExtractedPoint(this.particles[i].coords);
+					var vn = this.particles[i].velocity.getTangentVector(shortestVector);
+					var vt = this.particles[i].velocity.getNormalVector(shortestVector);
+					vt.multiplyBy(this.particles[i].coeffs.wall_friction);
+					vn.invert().multiplyBy(this.particles[i].coeffs.wall_normal);
+					this.particles[i].velocity = vt.add(vn);
+
+					var fn = this.particles[i].forces.getTangentVector(shortestVector);
+					var ft = this.particles[i].forces.getNormalVector(shortestVector);
+					ft.multiplyBy(this.particles[i].coeffs.wall_friction);
+					fn.invert().multiplyBy(this.particles[i].coeffs.wall_normal);
+					this.particles[i].forces = ft.add(fn);
+				}
 			}
+			var fc = summaryForce.multiplyBy(this.particles[i].coeffs.k_stick/summarySth);
+			this.particles[i].applyForce(fc.x, fc.y);
 		}
 		return this;
 	}

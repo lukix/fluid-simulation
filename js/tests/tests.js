@@ -4,7 +4,8 @@ require(
 		,'../fluid-simulation-engine/geometry/Polygon'
 		,'../fluid-simulation-engine/geometry/Vector'
 		,'../fluid-simulation-engine/base/Particle'
-	], function(LineSegment, Polygon, Vector, Particle) {
+		,'../fluid-simulation-engine/base/Body'
+	], function(LineSegment, Polygon, Vector, Particle, Body) {
 		QUnit.assert.close = function(number, expected, relError, message) {
 			var margin = relError*expected;
 			var result = number >= expected-margin && number <= expected+margin;
@@ -24,51 +25,51 @@ require(
 			assert.propEqual(line.getLinearEquation(), {A: 1, B: -0.5, C: -50});
 		});
 		QUnit.test("LineSegment.crossingPoint", function (assert) {
-			var a = new LineSegment({x: 0, y: 0}, {x: 10, y: 10});
-			var b = new LineSegment({x: 10, y: 0}, {x: 0, y: 10});
-			assert.propEqual(a.crossingPoint(b), {x: 5, y: 5});
+			var a = new LineSegment(new Vector(0, 0), new Vector(10, 10));
+			var b = new LineSegment(new Vector(10, 0), new Vector(0, 10));
+			assert.propEqual(a.crossingPoint(b), new Vector(5, 5));
 
-			var a = new LineSegment({x: 4, y: 0}, {x: 4, y: 10});
-			var b = new LineSegment({x: 0, y: 0}, {x: 10, y: 10});
-			assert.propEqual(a.crossingPoint(b), {x: 4, y: 4});
+			var a = new LineSegment(new Vector(4, 0), new Vector(4, 10));
+			var b = new LineSegment(new Vector(0, 0), new Vector(10, 10));
+			assert.propEqual(a.crossingPoint(b), new Vector(4, 4));
 
-			var a = new LineSegment({x: 4, y: 0}, {x: 4, y: 10});
-			var b = new LineSegment({x: 0, y: 0}, {x: 10, y: 10});
-			assert.propEqual(b.crossingPoint(a), {x: 4, y: 4});
+			var a = new LineSegment(new Vector(4, 0), new Vector(4, 10));
+			var b = new LineSegment(new Vector(0, 0), new Vector(10, 10));
+			assert.propEqual(b.crossingPoint(a), new Vector(4, 4));
 
-			var a = new LineSegment({x: 4, y: 0}, {x: 4, y: 10});
-			var b = new LineSegment({x: 5, y: 0}, {x: 5, y: 10});
+			var a = new LineSegment(new Vector(4, 0), new Vector(4, 10));
+			var b = new LineSegment(new Vector(5, 0), new Vector(5, 10));
 			assert.equal(a.crossingPoint(b), null);
 
-			var a = new LineSegment({x: 0, y: 4}, {x: 10, y: 4});
-			var b = new LineSegment({x: 0, y: 0}, {x: 10, y: 10});
-			assert.propEqual(a.crossingPoint(b), {x: 4, y: 4});
+			var a = new LineSegment(new Vector(0, 4), new Vector(10, 4));
+			var b = new LineSegment(new Vector(0, 0), new Vector(10, 10));
+			assert.propEqual(a.crossingPoint(b), new Vector(4, 4));
 
-			var a = new LineSegment({x: 0, y: 4}, {x: 10, y: 4});
-			var b = new LineSegment({x: 3, y: 0}, {x: 3, y: 10});
-			assert.propEqual(a.crossingPoint(b), {x: 3, y: 4});
+			var a = new LineSegment(new Vector(0, 4), new Vector(10, 4));
+			var b = new LineSegment(new Vector(3, 0), new Vector(3, 10));
+			assert.propEqual(a.crossingPoint(b), new Vector(3, 4));
 
-			var a = new LineSegment({x: 0, y: 4}, {x: 10, y: 4});
-			var b = new LineSegment({x: 3, y: 0}, {x: 3, y: 10});
-			assert.propEqual(b.crossingPoint(a), {x: 3, y: 4});
+			var a = new LineSegment(new Vector(0, 4), new Vector(10, 4));
+			var b = new LineSegment(new Vector(3, 0), new Vector(3, 10));
+			assert.propEqual(b.crossingPoint(a), new Vector(3, 4));
 
-			var a = new LineSegment({x: 4, y: 0}, {x: 4, y: 10});
-			var b = new LineSegment({x: 5, y: 0}, {x: 5, y: 10});
+			var a = new LineSegment(new Vector(4, 0), new Vector(4, 10));
+			var b = new LineSegment(new Vector(5, 0), new Vector(5, 10));
 			assert.equal(a.crossingPoint(b), null);
 
-			var a = new LineSegment({x: 0, y: 0}, {x: 10, y: 10});
-			var b = new LineSegment({x: 0, y: 1}, {x: 0, y: 11});
+			var a = new LineSegment(new Vector(0, 0), new Vector(10, 10));
+			var b = new LineSegment(new Vector(0, 1), new Vector(0, 11));
 			assert.equal(a.crossingPoint(b), null);
 
-			var a = new LineSegment({x: 0, y: 0}, {x: 2, y: 10});
-			var b = new LineSegment({x: 5, y: 0}, {x: 4, y: 1});
+			var a = new LineSegment(new Vector(0, 0), new Vector(2, 10));
+			var b = new LineSegment(new Vector(5, 0), new Vector(4, 1));
 			assert.equal(a.crossingPoint(b), null);
 		});
 		QUnit.test("LineSegment.getProjectedPoint", function (assert) {
-			var a = new LineSegment({x: 0, y: 0}, {x: 10, y: 10});
-			var p = {x: 0, y: 5};
-			assert.propEqual(a.getProjectedPoint(p), {x: 2.5, y: 2.5});
-			var p = {x: 0, y: 30};
+			var a = new LineSegment(new Vector(0, 0), new Vector(10, 10));
+			var p = new Vector(0, 5);
+			assert.propEqual(a.getProjectedPoint(p), new Vector(2.5, 2.5));
+			var p = new Vector(0, 30);
 			assert.equal(a.getProjectedPoint(p), null);
 			var p = {x: 5, y: 1};
 			assert.propEqual(a.getProjectedPoint(p), {x: 3, y: 3});
@@ -77,8 +78,8 @@ require(
 			var p = {x: 0, y: 0};
 			assert.propEqual(a.getProjectedPoint(p), {x: 0, y: 0});
 
-			var a = new LineSegment({x: 25, y: 25}, {x: 25, y: -25});
-			var p = {x: -12, y: -26};
+			var a = new LineSegment(new Vector(25, 25), new Vector(25, -25));
+			var p = new Vector(-12, -26);
 			assert.equal(a.getProjectedPoint(p), null);
 
 			var line = new LineSegment(
@@ -114,66 +115,66 @@ require(
 		});
 		QUnit.test("Polygon.minPoint", function (assert) {
 			var p = new Polygon(
-				 {x: 0, y: 0}
-				,{x: -2, y: 3}
-				,{x: 3, y: 2}
-				,{x: 5, y: 4}
-				,{x: 7, y: -1}
-				,{x: 4, y: 1}
+				 new Vector(0, 0)
+				,new Vector(-2, 3)
+				,new Vector(3, 2)
+				,new Vector(5, 4)
+				,new Vector(7, -1)
+				,new Vector(4, 1)
 			);
 			assert.propEqual(p.minPoint(), {x: -2, y: -1});
 
 			var p = new Polygon(
-				 {x: 0, y: 0}
-				,{x: 0, y: 1}
-				,{x: 1, y: 1}
-				,{x: 1, y: 0}
+				 new Vector(0, 0)
+				,new Vector(0, 1)
+				,new Vector(1, 1)
+				,new Vector(1, 0)
 			);
 			assert.propEqual(p.minPoint(), {x: 0, y: 0});
 		});
 		QUnit.test("Polygon.maxPoint", function (assert) {
 			var p = new Polygon(
-				 {x: 0, y: 0}
-				,{x: -2, y: 3}
-				,{x: 3, y: 2}
-				,{x: 5, y: 4}
-				,{x: 7, y: -1}
-				,{x: 4, y: 1}
+				 new Vector(0, 0)
+				,new Vector(-2, 3)
+				,new Vector(3, 2)
+				,new Vector(5, 4)
+				,new Vector(7, -1)
+				,new Vector(4, 1)
 			);
 			assert.propEqual(p.maxPoint(), {x: 7, y: 4});
 
 			var p = new Polygon(
-				 {x: 0, y: 0}
-				,{x: 0, y: 1}
-				,{x: 1, y: 1}
-				,{x: 1, y: 0}
+				 new Vector(0, 0)
+				,new Vector(0, 1)
+				,new Vector(1, 1)
+				,new Vector(1, 0)
 			);
 			assert.propEqual(p.maxPoint(), {x: 1, y: 1});
 		});
 		QUnit.test("Polygon.getVolume", function (assert) {
 			const relErr = 0.04;
 			var p = new Polygon(
-				 {x: 0, y: 0}
-				,{x: 0, y: 1}
-				,{x: 1, y: 1}
-				,{x: 1, y: 0}
+				 new Vector(0, 0)
+				,new Vector(0, 1)
+				,new Vector(1, 1)
+				,new Vector(1, 0)
 			).setCoords(new Vector(5, 12));
 			assert.close(p.getVolume(), 1.0, relErr);
 
 			var p = new Polygon(
-				 {x: 0, y: 0}
-				,{x: 1, y: 5}
-				,{x: 2, y: 0}
+				 new Vector(0, 0)
+				,new Vector(1, 5)
+				,new Vector(2, 0)
 			);
 			assert.close(p.getVolume(), 5.0, relErr);
 
 			var p = new Polygon(
-				 {x: 0, y: 0}
-				,{x: 0, y: 5}
-				,{x: 2, y: 3}
-				,{x: 4, y: 5}
-				,{x: 4, y: 0}
-				,{x: 2, y: 2}
+				 new Vector(0, 0)
+				,new Vector(0, 5)
+				,new Vector(2, 3)
+				,new Vector(4, 5)
+				,new Vector(4, 0)
+				,new Vector(2, 2)
 			);
 			assert.close(p.getVolume(), 12.0, relErr);
 		});
@@ -182,10 +183,10 @@ require(
 			const relErr = 0.04;
 
 			var p = new Polygon(
-				 {x: -0.5, y: -0.5}
-				,{x: -0.5, y: 0.5}
-				,{x: 0.5, y: 0.5}
-				,{x: 0.5, y: -0.5}
+				 new Vector(-0.5, -0.5)
+				,new Vector(-0.5, 0.5)
+				,new Vector(0.5, 0.5)
+				,new Vector(0.5, -0.5)
 			).setCoords(new Vector(5, 12));
 			assert.close(p.getMomentOfInertia(), 1/6, relErr);
 		});
@@ -350,13 +351,26 @@ require(
 
 		});
 
-
 		QUnit.test("LineSegment.getUnitVector", function (assert) {
 			var lineSegment = new LineSegment(
 				new Vector(3, 3),
 				new Vector(5, 5)
 			);
 			assert.propEqual(lineSegment.getUnitVector(), new Vector(1/Math.SQRT2, 1/Math.SQRT2));
+		});
+
+		QUnit.test("Body.getPotentialStickingForceVectors", function (assert) {
+			var shape = [
+				 new Vector(0, 0)
+				,new Vector(7, 0)
+				,new Vector(7, 5)
+				,new Vector(4, 7)
+				,new Vector(0, 5)
+			];
+			var body = new Body(shape);
+			var particle = new Particle(12, 3);
+			var result = body.getPotentialStickingForceVectors(particle);
+			assert.propEqual(result, {});
 		});
 
 	}
