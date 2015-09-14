@@ -3,14 +3,12 @@ define(['./LineSegment', './Vector'], function (LineSegment, Vector) {
 		this.coords = new Vector(0, 0);
 		this.angle = 0;
 		this.sides = [];
-		var verticlesArr = arr;
-		if(arguments.length > 1) {
-			verticlesArr = [];
-			for(var i = 0; i < arguments.length; i++) {
-				verticlesArr.push(arguments[i]);
-			}
-		}
-		if(arguments.length > 0 || typeof arr !== "undefined") {
+		if(arguments.length > 1)
+			var verticlesArr = Array.prototype.slice.apply(arguments);
+		else
+			var verticlesArr = arr;
+
+		if(arguments.length > 0) {
 			for(var i = 0; i < verticlesArr.length; i++) {
 				this.sides.push(new LineSegment(verticlesArr[i], verticlesArr[(i+1) % verticlesArr.length]));
 			}
