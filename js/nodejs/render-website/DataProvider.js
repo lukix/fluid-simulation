@@ -1,4 +1,4 @@
-define([], function () {
+define(['../../fluid-simulation-engine/geometry/Vector'], function (Vector) {
 		function DataProvider(file, readyCallback) {
 			this.file = file;
 			this.bytesRead = 0;
@@ -60,10 +60,10 @@ define([], function () {
 						piecesRead++;
 						var body = [];
 						for(var j = 0; j < numberOfVerticles; j++) {
-							body.push({
-								 x: float32View[piecesRead]
-								,y: float32View[piecesRead + 1]
-							});
+							body.push(new Vector(
+								 float32View[piecesRead]
+								,float32View[piecesRead + 1]
+							));
 							piecesRead += 2;
 						}
 						frame.bodies.push(body);
