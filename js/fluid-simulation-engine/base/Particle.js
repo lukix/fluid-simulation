@@ -12,7 +12,7 @@ define(['../geometry/Vector'], function (Vector) {
 		,visc_lin: 0.105
 		,visc_qua: 0.055
 		,d_stick: 35		//Wall sticking distance
-		,k_stick: 0.01
+		,k_stick: 0.03
 		,wall_friction: 0.1	//Wall sideways friction (vx *= wall_friction) (0 - max. friction; 1 - no friction)
 		,wall_normal: 0.9	//Wall bounce energy conservation
 		,mass: 1.0
