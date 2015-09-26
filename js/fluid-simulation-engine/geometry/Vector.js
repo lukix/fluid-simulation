@@ -60,5 +60,27 @@ define(function () {
 		var sin = vec.y/vecLength;
 		return new Vector(L*cos,L*sin);
 	}
+	Vector.prototype.multiplyNormalAndTangentComponents = function(referenceVector, tangentMultiplier, normalMultiplier) {
+		var vn = this.getTangentVector(referenceVector);
+		var vt = this.getNormalVector(referenceVector);
+		vt.multiplyBy(tangentMultiplier);
+		vn.multiplyBy(normalMultiplier);
+		var resultVector = vt.add(vn);
+		this.x = resultVector.x;
+		this.y = resultVector.y;
+		return this;
+	}
+	Vector.findTheShortestVector = function(vectorsArray) {
+		var shortestVector = vectorsArray[0];
+		var shortestLength = shortestVector.getLength();
+		for(var k = 0; k < vectorsArray.length; k++) {
+			var length = vectorsArray[k].getLength();
+			if(length < shortestLength) {
+				shortestVector = vectorsArray[k];
+				shortestLength = length;
+			}
+		}
+		return shortestVector;
+	}
 	return Vector;
 });

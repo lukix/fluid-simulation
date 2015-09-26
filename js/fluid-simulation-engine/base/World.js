@@ -63,7 +63,7 @@ define(
 			for(var y = 0; y < Y; y++) {
 				particlesArr.push(
 					new particleClass(
-						 startX + (x + (y % 2)/2) * this.coeffs.h * space 
+						 startX + (x + (y % 2)/2) * this.coeffs.h * space
 						,startY + y * this.coeffs.h * space
 					)
 				);
@@ -174,50 +174,46 @@ define(
 		return this;
 	}
 	World.prototype.applyBodiesCollisions = function () {
-		for(var i = 0; i < this.particles.length; i++) {
-			var summarySth = 0;
+		var createStickingForceObj = function (particle) {
+			var sumOfWeights = 0;
 			var summaryForce = new Vector(0, 0);
-			for(var j = 0; j < this.bodies.length; j++) {
-				var vectors = this.bodies[j].getPotentialStickingForceVectors(this.particles[i]);
-				var shortestVector = vectors[vectors.length - 1];
-				var shortestLength = shortestVector.getLength();
-				for(var k = vectors.length - 2; k >= 0; k--) {
-					var length = vectors[k].getLength();
-					if(length < shortestLength) {
-						shortestVector = vectors[k];
-						shortestLength = shortestVector.getLength();
+			return {
+				 add:	function (vectors) {
+						for(var k = 0; k < vectors.length; k++) {
+							var r = vectors[k].getLength();
+							if(r < particle.coeffs.d_stick) {
+								var a = r * (1 - (r /  particle.coeffs.d_stick));
+								var F_stick = a * a;
+								var force = vectors[k].multiplyBy(F_stick / r);
+								sumOfWeights += a;
+								summaryForce.add(force);
+							}
+						}
 					}
-					if(length > this.particles[i].coeffs.d_stick) {
-						vectors.splice(k, 1);
-					}
-				}
-				for(var k = 0; k < vectors.length; k++) {
-					var r = vectors[k].getLength();
-					if(r < 35) {
-						var a = r * (1 - (r /  this.particles[i].coeffs.d_stick));
-						var F_stick = a * a;
-						var force = vectors[k].multiplyBy(F_stick / r);
-						summarySth += a;
-						summaryForce.add(force);
-					}
-				}
-				if(shortestLength < 35 && this.bodies[j].containsPoint(this.particles[i].coords)) {
-					this.particles[i].coords = this.bodies[j].getExtractedPoint(this.particles[i].coords);
-					var vn = this.particles[i].velocity.getTangentVector(shortestVector);
-					var vt = this.particles[i].velocity.getNormalVector(shortestVector);
-					vt.multiplyBy(this.particles[i].coeffs.wall_friction);
-					vn.invert().multiplyBy(this.particles[i].coeffs.wall_normal);
-					this.particles[i].velocity = vt.add(vn);
-
-					var fn = this.particles[i].forces.getTangentVector(shortestVector);
-					var ft = this.particles[i].forces.getNormalVector(shortestVector);
-					ft.multiplyBy(this.particles[i].coeffs.wall_friction);
-					fn.invert().multiplyBy(this.particles[i].coeffs.wall_normal);
-					this.particles[i].forces = ft.add(fn);
+				,apply: function () {
+					var fc = summaryForce.multiplyBy(particle.coeffs.k_stick/sumOfWeights);
+					particle.applyForce(fc.x, fc.y);
 				}
 			}
-			var fc = summaryForce.multiplyBy(this.particles[i].coeffs.k_stick/summarySth);
-			this.particles[i].applyForce(fc.x, fc.y);
+		}
+
+		for(var i = 0; i < this.particles.length; i++) {
+			var stickingForce = createStickingForceObj(this.particles[i]);
+			for(var j = 0; j < this.bodies.length; j++) {
+				var vectors = this.bodies[j].getPotentialStickingForceVectors(this.particles[i]);
+				var shortestVector = Vector.findTheShortestVector(vectors);
+				var shortestLength = shortestVector.getLength();
+				stickingForce.add(vectors);
+
+				if(shortestLength < this.particles[i].coeffs.d_stick && this.bodies[j].containsPoint(this.particles[i].coords)) {
+					var wall_friction = this.particles[i].coeffs.wall_friction;
+					var wall_normal = this.particles[i].coeffs.wall_normal;
+					this.particles[i].coords = this.bodies[j].getExtractedPoint(this.particles[i].coords);
+					this.particles[i].velocity.multiplyNormalAndTangentComponents(shortestVector, wall_friction, -wall_normal);
+					this.particles[i].forces.multiplyNormalAndTangentComponents(shortestVector, wall_friction, -wall_normal);
+				}
+			}
+			stickingForce.apply();
 		}
 		return this;
 	}
