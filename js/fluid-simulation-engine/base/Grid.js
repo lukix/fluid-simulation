@@ -57,7 +57,7 @@ define(function () {
 							if(this.gridArray[x][y] === undefined)
 								continue;
 							for(var j = 0; j < this.gridArray[x][y].length; j++) {
-								if(X == x && Y==y && i==j)
+								if(X === x && Y === y && i === j)
 									continue;
 								callback(context, this.gridArray[X][Y][i], this.gridArray[x][y][j]);
 								loops++;
