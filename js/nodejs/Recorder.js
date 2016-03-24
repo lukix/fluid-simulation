@@ -47,7 +47,7 @@ define([], function () {
 		}
 		for(var i = 0; i < this.world.particles.length; i++) {
 			var color = this.world.particles[i].color.substring(1);
-			if(color.length == 3)
+			if(color.length === 3)
 				color = color[0]+color[0]+color[1]+color[1]+color[2]+color[2];
 			buffer.writeFloatLE(this.world.particles[i].coords.x, offset + 0 * 4);
 			buffer.writeFloatLE(this.world.particles[i].coords.y, offset + 1 * 4);

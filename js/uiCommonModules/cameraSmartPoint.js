@@ -1,7 +1,7 @@
 define(['../fluid-simulation-engine/geometry/Polygon'], function (Polygon) {
 	return function (ctx, TRANSFORM, myCanvas, polygonsArr) {
 		const MARGIN = 1.05;
-		if(polygonsArr.length == 0)
+		if(polygonsArr.length === 0)
 			return false;
 		var minPoint = Polygon.getMinPointOfPolygonsArray(polygonsArr);
 		var maxPoint = Polygon.getMaxPointOfPolygonsArray(polygonsArr);

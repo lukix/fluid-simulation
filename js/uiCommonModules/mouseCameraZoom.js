@@ -1,7 +1,7 @@
 define(['jquery', '../lib/jquery.mousewheel.min'], function ($, jqueryMouseWheel) {
 	return function (ctx, TRANSFORM) {
 		$('#canvas').mousewheel(function (e) {
-			if(e.originalEvent.deltaY == 0)
+			if(e.originalEvent.deltaY === 0)
 				return;
 			var scroll = 100;
 			var k = 0.011;

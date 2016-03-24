@@ -52,11 +52,11 @@ define(['./Vector'], function (Vector) {
 		var eq1 = this.getLinearEquation();
 		var eq2 = lineSegment.getLinearEquation();
 		var crossingPoint = new Vector();
-		if((eq1.A*eq2.B - eq2.A*eq1.B) == 0) {	//parallel
+		if((eq1.A*eq2.B - eq2.A*eq1.B) === 0) {	//parallel
 			crossingPoint = null;
 		}
-		else if(eq1.B == 0 || eq2.B == 0) {	//First lineSegment is vertical
-			if(eq2.B == 0) {	//Swap values
+		else if(eq1.B === 0 || eq2.B === 0) {	//First lineSegment is vertical
+			if(eq2.B === 0) {	//Swap values
 				var eq_temp = eq1;
 				eq1 = eq2;
 				eq2 = eq_temp;
@@ -92,14 +92,14 @@ define(['./Vector'], function (Vector) {
 	LineSegment.prototype.getProjectedPoint = function(point) {
 		var eq = this.getLinearEquation();
 		var projectedPoint = new Vector();
-		if(eq.B == 0) {	//Vertical
+		if(eq.B === 0) {	//Vertical
 			projectedPoint.x = -eq.C/eq.A;
 			projectedPoint.y = point.y;
 			if(!(projectedPoint.y >= Math.min(this.p1.y, this.p2.y) && projectedPoint.y <= Math.max(this.p1.y, this.p2.y))) {
 				projectedPoint = null;
 			}
 		}
-		else if(eq.A == 0) {	//Horizontal
+		else if(eq.A === 0) {	//Horizontal
 			projectedPoint.x = point.x;
 			projectedPoint.y = -eq.C/eq.B;
 			if(!(projectedPoint.x >= Math.min(this.p1.x, this.p2.x) && projectedPoint.x <= Math.max(this.p1.x, this.p2.x))) {

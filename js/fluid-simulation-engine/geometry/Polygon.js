@@ -101,7 +101,7 @@ define(['./LineSegment', './Vector'], function (LineSegment, Vector) {
 		var relativePoint = new Vector(point).subtract(this.coords);
 		var ep;
 		var i = 0;
-		while((ep = this.sides[i].getProjectedPoint(relativePoint)) == null) {
+		while((ep = this.sides[i].getProjectedPoint(relativePoint)) === null) {
 			i++;
 			if(i >= this.sides.length) {
 				return null;
@@ -130,7 +130,7 @@ define(['./LineSegment', './Vector'], function (LineSegment, Vector) {
 		return new Vector(relativePoint).add(displacementVector);
 	}
 	Polygon.getMinPointOfPolygonsArray = function (polygonArr) {
-		if(polygonArr.length == 0)
+		if(polygonArr.length === 0)
 			return null;
 		var minPoint = polygonArr[0].minPoint();
 		for(var i = 0; i < polygonArr.length; i++) {
@@ -143,7 +143,7 @@ define(['./LineSegment', './Vector'], function (LineSegment, Vector) {
 		return minPoint;
 	}
 	Polygon.getMaxPointOfPolygonsArray = function (polygonArr) {
-		if(polygonArr.length == 0)
+		if(polygonArr.length === 0)
 			return null;
 		var maxPoint = polygonArr[0].maxPoint();
 		for(var i = 0; i < polygonArr.length; i++) {
