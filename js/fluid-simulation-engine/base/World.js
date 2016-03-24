@@ -93,12 +93,13 @@ define(
 	}
 	World.prototype.nextStep = function (dt) {
 		dt *= this.timeSpeed;
+		this.grid.update();
 
-		this.applyDoubleDensityRelaxation()
-			.applyViscosity(dt)
-			.applyRepulsiveForces()
-			.applyBodiesCollisions()
-			.respawnParticles();
+		this.applyDoubleDensityRelaxation();
+		this.applyViscosity(dt);
+		this.applyRepulsiveForces();
+		this.applyBodiesCollisions();
+		this.respawnParticles();
 
 		for(var i=0; i<this.particles.length; i++) {
 			var forces = this.particles[i].getForces();
@@ -162,7 +163,7 @@ define(
 				var Ix = (ux/u)*I;
 				var Iy = (uy/u)*I;
 
-				if(u == 0) {
+				if(u === 0) {
 					Ix = 0;
 					Iy = 0;
 				}

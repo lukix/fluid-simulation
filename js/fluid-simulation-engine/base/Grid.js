@@ -13,7 +13,7 @@ define(function () {
 		return this.loopsArr.slice(0);
 	}
 	Grid.prototype.init = function () {
-		if(this.particles.length == 0)
+		if(this.particles.length === 0)
 			return;
 		this.gridStart = {
 			x: this.particles[0].coords.x,
@@ -30,6 +30,7 @@ define(function () {
 	Grid.prototype.update = function () {
 		this.init();
 		this.gridArray = [];
+
 		for(var i = 0; i < this.particles.length; i++) {
 			var x = Math.ceil((this.particles[i].coords.x - this.gridStart.x) / this.cellSize);
 			var y = Math.ceil((this.particles[i].coords.y - this.gridStart.y) / this.cellSize);
@@ -41,7 +42,23 @@ define(function () {
 		}
 	}
 	Grid.prototype.forEachPair = function (callback, context) {
-		this.update();
+		//Preparing checkArray
+		var checkedArray = [];
+		for(var X = 0; X < this.gridArray.length; X++) {
+			if(this.gridArray[X] === undefined)
+				continue;
+			checkedArray[X] = [];
+			for(var Y = 0; Y < this.gridArray[X].length; Y++) {
+				if(this.gridArray[X][Y] === undefined)
+					continue;
+				checkedArray[X][Y] = [];
+				for(var i = this.gridArray[X][Y].length - 1; i >= 0; i--) {
+					checkedArray[X][Y][i] = false;
+				}
+			}
+		}
+
+		//Main loop
 		var loops = 0;
 		for(var X = 0; X < this.gridArray.length; X++) {
 			if(this.gridArray[X] === undefined)
@@ -57,14 +74,14 @@ define(function () {
 							if(this.gridArray[x][y] === undefined)
 								continue;
 							for(var j = 0; j < this.gridArray[x][y].length; j++) {
-								if(X === x && Y === y && i === j)
+								if(checkedArray[x][y][j] || (X === x && Y === y && i === j))
 									continue;
 								callback(context, this.gridArray[X][Y][i], this.gridArray[x][y][j]);
 								loops++;
 							}
 						}
 					}
-					this.gridArray[X][Y].pop();
+					checkedArray[X][Y][i] = true;
 				}
 			}
 		}
