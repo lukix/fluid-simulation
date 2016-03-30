@@ -14,10 +14,9 @@ define(
 	Body.prototype.getPotentialStickingForceVectors = function (particle) {
 		var relativePoint = new Vector(particle.coords).subtract(this.coords);
 		var vectors = [];
-		var verticles = [];
-		for(var i = 0; i < this.sides.length; i++) {
-			verticles[i] = true;
-		}
+		var verticles = new Array(this.sides.length);
+		verticles.fill(true);
+
 		for(var i = 0; i < this.sides.length; i++) {
 			var projectedPoint;
 			if((projectedPoint = this.sides[i].getProjectedPoint(relativePoint)) != null) {
