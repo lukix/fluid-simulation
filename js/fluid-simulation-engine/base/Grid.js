@@ -32,8 +32,8 @@ define(function () {
 		this.gridArray = [];
 
 		for(var i = 0; i < this.particles.length; i++) {
-			var x = Math.ceil((this.particles[i].coords.x - this.gridStart.x) / this.cellSize);
-			var y = Math.ceil((this.particles[i].coords.y - this.gridStart.y) / this.cellSize);
+			var x = Math.floor((this.particles[i].coords.x - this.gridStart.x) / this.cellSize);
+			var y = Math.floor((this.particles[i].coords.y - this.gridStart.y) / this.cellSize);
 			if(this.gridArray[x] === undefined)
 				this.gridArray[x] = [];
 			if(this.gridArray[x][y] === undefined)
@@ -96,8 +96,8 @@ define(function () {
 				continue;
 			for(var y = 0; y < this.gridArray[x].length; y++) {
 				ctx.strokeRect(
-					 this.gridStart.x + (x-1) * this.cellSize
-					,this.gridStart.y + (y-1) * this.cellSize
+					 this.gridStart.x + x * this.cellSize
+					,this.gridStart.y + y * this.cellSize
 					,this.cellSize
 					,this.cellSize
 				);
