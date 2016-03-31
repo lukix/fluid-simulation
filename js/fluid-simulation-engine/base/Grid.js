@@ -89,5 +89,21 @@ define(function () {
 		this.loopsArr.push(loops);
 		this.loopsArr.shift();
 	}
+	Grid.prototype.render = function (ctx) {
+		ctx.strokeStyle = "rgb(220, 130, 0)";
+		for(var x = 0; x < this.gridArray.length; x++) {
+			if(this.gridArray[x] === undefined)
+				continue;
+			for(var y = 0; y < this.gridArray[x].length; y++) {
+				ctx.strokeRect(
+					 this.gridStart.x + (x-1) * this.cellSize
+					,this.gridStart.y + (y-1) * this.cellSize
+					,this.cellSize
+					,this.cellSize
+				);
+			}
+		}
+		return this;
+	}
 	return Grid;
 });

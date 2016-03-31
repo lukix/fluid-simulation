@@ -47,6 +47,8 @@ define(
           this.ctx.clearRect(0, 0, this.myCanvas.width, this.myCanvas.height);
           this.ctx.restore();
           world.render(this.ctx);
+          if($("#showGrid").prop("checked"))
+            world.grid.render(this.ctx);
         }
 
       }

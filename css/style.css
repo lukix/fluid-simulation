@@ -30,6 +30,19 @@ html, body {
 	margin: 0;
 	list-style-type: none;
 }
+label {
+	font-size: 18px;
+	line-height: 18px;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	margin-top: 5px
+}
+input[type=checkbox] {
+	width: 16px;
+	height: 16px;
+	margin-right: 7px;
+}
 #show {
 	margin-bottom: 5px;
 }
