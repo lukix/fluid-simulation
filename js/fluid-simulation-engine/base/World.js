@@ -4,7 +4,8 @@ define(
 		,'../geometry/Vector'
 		,'../geometry/LineSegment'
 		,'../geometry/Polygon'
-	], function (Grid, Vector, LineSegment, Polygon) {
+		,'../debugTools/PERFORMANCE'
+	], function (Grid, Vector, LineSegment, Polygon, PERFORMANCE) {
 	function World() {
 		this.gravity = new Vector(0.0, 0.5);
 		this.timeSpeed = 1.0/60;
@@ -92,13 +93,16 @@ define(
 		return this;
 	}
 	World.prototype.nextStep = function (dt) {
+		PERFORMANCE.time("nextStep");
 		dt *= this.timeSpeed;
 		this.grid.update();
 
 		this.applyDoubleDensityRelaxation();
 		this.applyViscosity(dt);
 		this.applyRepulsiveForces();
+		PERFORMANCE.time("bc");
 		this.applyBodiesCollisions();
+		PERFORMANCE.timeEnd("bc");
 		this.respawnParticles();
 
 		for(var i=0; i<this.particles.length; i++) {
@@ -108,6 +112,7 @@ define(
 			this.particles[i].changeCoordsBy(dt*this.particles[i].velocity.x, dt*this.particles[i].velocity.y);
 			this.particles[i].setForces(this.gravity.x*mass, this.gravity.y*mass);
 		}
+		PERFORMANCE.timeEnd("nextStep");
 		return this;
 	}
 	World.prototype.applyDoubleDensityRelaxation = function () {
