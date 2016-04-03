@@ -5,6 +5,7 @@ requirejs.config({
 });
 require(
 	[
+		'jquery', 'initWorld', './ui/ui', './ui/showPerformanceData', './debug/nansDetector', '../fluid-simulation-engine/debugTools/PERFORMANCE'
 	],
 	function($, initWorld, ui, showPerformanceData, nansDetector, PERFORMANCE) {
 		var world = initWorld();
