@@ -1,11 +1,12 @@
 define(
 	[
 		 './Grid'
+		,'./BodiesGrid'
 		,'../geometry/Vector'
 		,'../geometry/LineSegment'
 		,'../geometry/Polygon'
 		,'../debugTools/PERFORMANCE'
-	], function (Grid, Vector, LineSegment, Polygon, PERFORMANCE) {
+	], function (Grid, BodiesGrid, Vector, LineSegment, Polygon, PERFORMANCE) {
 	function World() {
 		this.gravity = new Vector(0.0, 0.5);
 		this.timeSpeed = 1.0/60;
@@ -16,6 +17,7 @@ define(
 		this.bodies = [];
 		this.repulsiveForceSources = [];	//{coords: Vector, strength: number}
 		this.grid = new Grid(this.particles, this.coeffs.h);
+		this.bodiesGrid = new BodiesGrid(this.bodies, 35);
 		this.respawnCoords;
 		this.isOutOfBoundsFunc = function (particle) {
 			return false;
@@ -38,6 +40,7 @@ define(
 	}
 	World.prototype.addBody = function (body) {
 		this.bodies.push(body);
+		this.bodiesGrid.bodiesHasChanged();
 		return this;
 	}
 	World.prototype.getBodiesMinPoint = function () {
@@ -96,6 +99,7 @@ define(
 		PERFORMANCE.time("nextStep");
 		dt *= this.timeSpeed;
 		this.grid.update();
+		this.bodiesGrid.update();
 
 		this.applyDoubleDensityRelaxation();
 		this.applyViscosity(dt);
@@ -204,20 +208,24 @@ define(
 
 		for(var i = 0; i < this.particles.length; i++) {
 			var stickingForce = createStickingForceObj(this.particles[i]);
-			for(var j = 0; j < this.bodies.length; j++) {
-				var vectors = this.bodies[j].getPotentialStickingForceVectors(this.particles[i]);
-				var shortestVector = Vector.findTheShortestVector(vectors);
-				var shortestLength = shortestVector.getLength();
-				stickingForce.add(vectors);
 
-				if(shortestLength < this.particles[i].coeffs.d_stick && this.bodies[j].containsPoint(this.particles[i].coords)) {
-					var wall_friction = this.particles[i].coeffs.wall_friction;
-					var wall_normal = this.particles[i].coeffs.wall_normal;
-					this.particles[i].coords = this.bodies[j].getExtractedPoint(this.particles[i].coords);
-					this.particles[i].velocity.multiplyNormalAndTangentComponents(shortestVector, wall_friction, -wall_normal);
-					this.particles[i].forces.multiplyNormalAndTangentComponents(shortestVector, wall_friction, -wall_normal);
+			this.bodiesGrid.forEachBody(this.particles[i], function (self, obj) {
+				var vectors = BodiesGrid.getPotentialStickingForceVectors(self.particles[i], obj);
+
+				if(vectors.length > 0) {
+					var shortestVector = Vector.findTheShortestVector(vectors);
+					var shortestLength = shortestVector.getLength();
+					stickingForce.add(vectors);
+
+					if(shortestLength < self.particles[i].coeffs.d_stick && obj.body.containsPoint(self.particles[i].coords)) {
+						var wall_friction = self.particles[i].coeffs.wall_friction;
+						var wall_normal = self.particles[i].coeffs.wall_normal;
+						self.particles[i].coords = obj.body.getExtractedPoint(self.particles[i].coords);
+						self.particles[i].velocity.multiplyNormalAndTangentComponents(shortestVector, wall_friction, -wall_normal);
+						self.particles[i].forces.multiplyNormalAndTangentComponents(shortestVector, wall_friction, -wall_normal);
+					}
 				}
-			}
+			}, this);
 			stickingForce.apply();
 		}
 		return this;
