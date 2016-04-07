@@ -95,12 +95,14 @@ define(
 		return this;
 	}
 	World.prototype.nextStep = function (dt) {
+		const maxDt = 33;
+		dt = dt > maxDt ? maxDt : dt;
 		dt *= this.timeSpeed;
 		this.grid.update();
 		this.bodiesGrid.update();
 
 		this.applyDoubleDensityRelaxation();
-		this.applyViscosity(dt);
+		this.applyViscosity();
 		this.applyRepulsiveForces();
 		this.applyBodiesCollisions();
 		this.respawnParticles();
@@ -150,7 +152,7 @@ define(
 		}, this);
 		return this;
 	}
-	World.prototype.applyViscosity = function (dt) {
+	World.prototype.applyViscosity = function () {
 		this.grid.forEachPair(function (self, A, B) {
 			var r = A.getDistance(B);
 			var q = r / self.coeffs.h;
@@ -171,8 +173,8 @@ define(
 					Iy = 0;
 				}
 
-				A.changeVelocityBy(-dt*Ix, -dt*Iy);
-				B.changeVelocityBy(dt*Ix, dt*Iy);
+				A.applyForce(-Ix, -Iy);
+				B.applyForce(Ix, Iy);
 			}
 		}, this);
 		return this;
@@ -236,14 +238,17 @@ define(
 		return this;
 	}
 	World.prototype.applyRepulsiveForces = function () {
+		const maxF = 20;
 		for(var i = 0; i < this.repulsiveForceSources.length; i++) {
 			for(var j = 0; j < this.particles.length; j++) {
 				var r = this.particles[j].getDistance(this.repulsiveForceSources[i]);
 				if(r != 0) {
-					var F = - this.repulsiveForceSources[i].strength / (r * r);
+					var F = this.repulsiveForceSources[i].strength / (r * r);
+					F = F > maxF ? maxF : F;
+
 					var Fx = F * (this.repulsiveForceSources[i].coords.x - this.particles[j].coords.x) / r;
 					var Fy = F * (this.repulsiveForceSources[i].coords.y - this.particles[j].coords.y) / r;
-					this.particles[j].applyForce(Fx, Fy);
+					this.particles[j].applyForce(-Fx, -Fy);
 				}
 			}
 		}
