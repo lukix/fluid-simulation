@@ -5,9 +5,9 @@ requirejs.config({
 });
 require(
 	[
-		'jquery', 'initWorld', './ui/ui', './ui/showPerformanceData', './debug/nansDetector', '../fluid-simulation-engine/debugTools/PERFORMANCE'
+		'jquery', 'initWorld', './ui/ui', './ui/showPerformanceData', './debug/nansDetector'
 	],
-	function($, initWorld, ui, showPerformanceData, nansDetector, PERFORMANCE) {
+	function($, initWorld, ui, showPerformanceData, nansDetector) {
 		var world = initWorld();
 		var uiObj = ui(world);
 		uiObj.init();
@@ -26,10 +26,5 @@ require(
 				requestAnimationFrame(loop);
 			})();
 		})();
-		setInterval(function () {
-			for(var item in PERFORMANCE.data) {
-				console.log(item, ":  ", PERFORMANCE.getPartOf(item, "nextStep"));
-			}
-		}, 500);
 	}
 );
