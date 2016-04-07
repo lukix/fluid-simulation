@@ -4,13 +4,9 @@ define(function () {
 		this.cellSize = cellSize;
 		this.gridStart;
 		this.gridArray = [];
-		this.loopsArr = new Array(50);
 	}
 	Grid.prototype.setCellSize = function (cellSize) {
 		this.cellSize = cellSize;
-	}
-	Grid.prototype.getLoopsArr = function () {
-		return this.loopsArr.slice(0);
 	}
 	Grid.prototype.init = function () {
 		if(this.particles.length === 0)
@@ -59,7 +55,6 @@ define(function () {
 		}
 
 		//Main loop
-		var loops = 0;
 		for(var X = 0; X < this.gridArray.length; X++) {
 			if(this.gridArray[X] === undefined)
 				continue;
@@ -77,7 +72,6 @@ define(function () {
 								if(checkedArray[x][y][j] || (X === x && Y === y && i === j))
 									continue;
 								callback(context, this.gridArray[X][Y][i], this.gridArray[x][y][j]);
-								loops++;
 							}
 						}
 					}
@@ -85,9 +79,6 @@ define(function () {
 				}
 			}
 		}
-		//Save some performance data
-		this.loopsArr.push(loops);
-		this.loopsArr.shift();
 	}
 	Grid.prototype.render = function (ctx) {
 		ctx.strokeStyle = "rgb(220, 130, 0)";

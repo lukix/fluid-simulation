@@ -6,13 +6,9 @@ define(['jquery'], function ($) {
 
 		var avgDts = getAvgVal(lastDts);
 		var avgFps = 1000/avgDts;
-		var avgChecks = getAvgVal(world.getGridLoopsArr());
-		var checkTime = 1000000*avgDts/avgChecks;
 
 		updateDOM({
 			 fps: {value: avgFps, text: "fps"}
-			,avgChecks: {value: avgChecks, text: "checks"}
-			,checkTime: {value: checkTime, text: "ns/check"}
 			,particlesNumber: {value: world.particles.length, text: "particles"}
 		});
 

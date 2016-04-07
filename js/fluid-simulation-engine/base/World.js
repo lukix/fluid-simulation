@@ -27,9 +27,6 @@ define(
 		this.respawnCoords = respawnCoords;
 		return this;
 	}
-	World.prototype.getGridLoopsArr = function () {
-		return this.grid.getLoopsArr();
-	}
 	World.prototype.setCoeffs = function (coeffs) {
 		for(var i in coeffs) {
 			this.coeffs[i] = coeffs[i];
