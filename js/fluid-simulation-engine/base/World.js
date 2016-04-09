@@ -98,8 +98,8 @@ define(
 		this.grid.update();
 		this.bodiesGrid.update();
 
-		this.applyDoubleDensityRelaxation();
-		this.applyViscosity();
+		this.calculateParticlesPressures();
+		this.grid.forEachPair(World.particlePairFunctions.ddr_and_visocity, this);
 		this.applyRepulsiveForces();
 		this.applyBodiesCollisions();
 		this.respawnParticles();
@@ -113,67 +113,21 @@ define(
 		}
 		return this;
 	}
-	World.prototype.applyDoubleDensityRelaxation = function () {
+	World.prototype.calculateParticlesPressures = function () {
 		for(var i = 0; i < this.particles.length; i++) {
 			this.particles[i].clearPressure();
 		}
-		this.grid.forEachPair(function (self, A, B) {
-			var r = A.getDistance(B);
-			var q = r / self.coeffs.h;
-			if(q < 1) {
-				var p = (1-q) * (1-q);
-				var p_near = p * (1-q);
-				A.increasePressure(p, p_near);
-				B.increasePressure(p, p_near);
-			}
-		}, this);
+		this.grid.forEachPair(World.particlePairFunctions.pressure, this);
 		for(var i = 0; i < this.particles.length; i++) {
 			this.particles[i].setPressure(
 				this.particles[i].coeffs.k*(this.particles[i].pressure.normal-this.particles[i].coeffs.p0),
 				this.particles[i].coeffs.k_near*this.particles[i].pressure.near
 			);
 		}
-		this.grid.forEachPair(function (self, A, B) {
-			var r = A.getDistance(B);
-			var q = r / self.coeffs.h;
-			if(q < 1) {
-				var xr = (A.coords.x-B.coords.x)/r;
-				var yr = (A.coords.y-B.coords.y)/r;
-
-				var a1=(A.pressure.normal*(1-q)+A.pressure.near*(1-q)*(1-q))/2;
-				var a2=(B.pressure.normal*(1-q)+B.pressure.near*(1-q)*(1-q))/2;
-
-				A.applyForce((a1+a2)*xr, (a1+a2)*yr);
-				B.applyForce(-(a1+a2)*xr, -(a1+a2)*yr);
-			}
-		}, this);
 		return this;
 	}
 	World.prototype.applyViscosity = function () {
-		this.grid.forEachPair(function (self, A, B) {
-			var r = A.getDistance(B);
-			var q = r / self.coeffs.h;
-			if(q < 1) {
-				var ux = A.velocity.x - B.velocity.x;
-				var uy = A.velocity.y - B.velocity.y;
-				var u = Math.sqrt(ux*ux+uy*uy);
-
-				var visc_lin = A.coeffs.visc_lin * B.coeffs.visc_lin;
-				var visc_qua = A.coeffs.visc_qua * B.coeffs.visc_qua;
-
-				var I = (1-q)*(visc_lin*u+visc_qua*u*u);
-				var Ix = (ux/u)*I;
-				var Iy = (uy/u)*I;
-
-				if(u === 0) {
-					Ix = 0;
-					Iy = 0;
-				}
-
-				A.applyForce(-Ix, -Iy);
-				B.applyForce(Ix, Iy);
-			}
-		}, this);
+		this.grid.forEachPair(World.particlePairFunctions.viscosity, this);
 		return this;
 	}
 	World.prototype.applyBodiesCollisions = function () {
@@ -260,5 +214,59 @@ define(
 		}
 		return this;
 	}
+	World.particlePairFunctions = {
+		pressure: function (self, A, B) {
+			var r = A.getDistance(B);
+			var q = r / self.coeffs.h;
+			if(q < 1) {
+				var p = (1-q) * (1-q);
+				var p_near = p * (1-q);
+				A.increasePressure(p, p_near);
+				B.increasePressure(p, p_near);
+			}
+		}
+		,doubleDensityRelaxation: function (self, A, B) {
+			var r = A.getDistance(B);
+			var q = r / self.coeffs.h;
+			if(q < 1) {
+				var xr = (A.coords.x-B.coords.x)/r;
+				var yr = (A.coords.y-B.coords.y)/r;
+
+				var a1=(A.pressure.normal*(1-q)+A.pressure.near*(1-q)*(1-q))/2;
+				var a2=(B.pressure.normal*(1-q)+B.pressure.near*(1-q)*(1-q))/2;
+
+				A.applyForce((a1+a2)*xr, (a1+a2)*yr);
+				B.applyForce(-(a1+a2)*xr, -(a1+a2)*yr);
+			}
+		}
+		,viscosity: function (self, A, B) {
+			var r = A.getDistance(B);
+			var q = r / self.coeffs.h;
+			if(q < 1) {
+				var ux = A.velocity.x - B.velocity.x;
+				var uy = A.velocity.y - B.velocity.y;
+				var u = Math.sqrt(ux*ux+uy*uy);
+
+				var visc_lin = A.coeffs.visc_lin * B.coeffs.visc_lin;
+				var visc_qua = A.coeffs.visc_qua * B.coeffs.visc_qua;
+
+				var I = (1-q)*(visc_lin*u+visc_qua*u*u);
+				var Ix = (ux/u)*I;
+				var Iy = (uy/u)*I;
+
+				if(u === 0) {
+					Ix = 0;
+					Iy = 0;
+				}
+
+				A.applyForce(-Ix, -Iy);
+				B.applyForce(Ix, Iy);
+			}
+		}
+		,ddr_and_visocity: function (self, A, B) {
+			World.particlePairFunctions.doubleDensityRelaxation(self, A, B);
+			World.particlePairFunctions.viscosity(self, A, B);
+		}
+	};
 	return World;
 });
