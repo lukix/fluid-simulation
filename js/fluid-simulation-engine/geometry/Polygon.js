@@ -53,7 +53,13 @@ define(['./LineSegment', './Vector'], function (LineSegment, Vector) {
 		if(typeof absolute === "undefined" || absolute) {
 			relativePoint.subtract(this.coords);
 		}
-		var minPoint = this.minPoint();
+		var minPoint = this.minPoint(false);
+		if(relativePoint.x < minPoint.x || relativePoint.y < minPoint.y)
+			return false;
+		var maxPoint = this.maxPoint(false);
+		if(relativePoint.x > maxPoint.x || relativePoint.y > maxPoint.y)
+			return false;
+
 		var outsidePoint = new Vector(minPoint.x-1.23456789, minPoint.y-1.98765431);
 		var ray = new LineSegment(outsidePoint, relativePoint);
 		var intersections = 0;
