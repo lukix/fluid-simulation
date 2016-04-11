@@ -225,24 +225,21 @@ define(
 				B.increasePressure(p, p_near);
 			}
 		}
-		,doubleDensityRelaxation: function (self, A, B) {
+		,ddr_and_visocity: function (self, A, B) {
 			var r = A.getDistance(B);
 			var q = r / self.coeffs.h;
 			if(q < 1) {
+				//Double Density Relaxation:
 				var xr = (A.coords.x-B.coords.x)/r;
 				var yr = (A.coords.y-B.coords.y)/r;
 
 				var a1=(A.pressure.normal*(1-q)+A.pressure.near*(1-q)*(1-q))/2;
 				var a2=(B.pressure.normal*(1-q)+B.pressure.near*(1-q)*(1-q))/2;
 
-				A.applyForce((a1+a2)*xr, (a1+a2)*yr);
-				B.applyForce(-(a1+a2)*xr, -(a1+a2)*yr);
-			}
-		}
-		,viscosity: function (self, A, B) {
-			var r = A.getDistance(B);
-			var q = r / self.coeffs.h;
-			if(q < 1) {
+				var ddrForceA = {x: (a1+a2)*xr, y: (a1+a2)*yr};
+				var ddrForceB = {x: -(a1+a2)*xr, y: -(a1+a2)*yr};
+
+				//Viscosity:
 				var ux = A.velocity.x - B.velocity.x;
 				var uy = A.velocity.y - B.velocity.y;
 				var u = Math.sqrt(ux*ux+uy*uy);
@@ -258,14 +255,13 @@ define(
 					Ix = 0;
 					Iy = 0;
 				}
+				var viscForceA = {x: -Ix+(a1+a2)*xr, y: -Iy+(a1+a2)*yr};
+				var viscForceB = {x: Ix-(a1+a2)*xr, y: Iy-(a1+a2)*yr};
 
-				A.applyForce(-Ix, -Iy);
-				B.applyForce(Ix, Iy);
+				//Apply forces:
+				A.applyForce(ddrForceA.x + viscForceA.x, ddrForceA.y + viscForceA.y);
+				B.applyForce(ddrForceB.x + viscForceB.x, ddrForceB.y + viscForceB.y);
 			}
-		}
-		,ddr_and_visocity: function (self, A, B) {
-			World.particlePairFunctions.doubleDensityRelaxation(self, A, B);
-			World.particlePairFunctions.viscosity(self, A, B);
 		}
 	};
 	return World;
