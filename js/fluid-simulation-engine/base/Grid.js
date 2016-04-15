@@ -49,38 +49,22 @@ define(function () {
 			this.gridArray[x][y].push(this.particles[i]);
 		}
 	}
-	Grid.prototype.createCheckedArray = function() {
-		var checkedArray = new Array(this.gridArray.length);
-		for(var X = 0; X < checkedArray.length; X++) {
-			checkedArray[X] = new Array(this.gridArray[X].length);
-			for(var Y = 0; Y < checkedArray[X].length; Y++) {
-				checkedArray[X][Y] = new Array(this.gridArray[X][Y].length);
-				checkedArray[X][Y].fill(false);
-			}
-		}
-		return checkedArray;
-	}
 	Grid.prototype.forEachPair = function (callback, context) {
-		//Preparing checkArray
-		var checkedArray = this.createCheckedArray();
-
-		//Main loop
 		for(var X = 0; X < this.gridArray.length; X++) {
 			for(var Y = 0; Y < this.gridArray[X].length; Y++) {
-				for(var i = this.gridArray[X][Y].length - 1; i >= 0; i--) {
+				for(var i = 0; i < this.gridArray[X][Y].length; i++) {
 					for(var x = X+1; x >= X; x--) {
 						if(x >= this.gridArray.length)
 							continue;
 						for(var y = Y+1; y >= Y+X-x; y--) {
 							if(y < 0 || y >= this.gridArray[x].length)
 								continue;
-							for(var j = 0; j < this.gridArray[x][y].length; j++) {
-								if(!((X === x && Y === y && i === j) || checkedArray[x][y][j]))
-									callback(context, this.gridArray[X][Y][i], this.gridArray[x][y][j]);
+							var j = (X === x && Y === y) ? i+1 : 0;
+							for(; j < this.gridArray[x][y].length; j++) {
+								callback(context, this.gridArray[X][Y][i], this.gridArray[x][y][j]);
 							}
 						}
 					}
-					checkedArray[X][Y][i] = true;
 				}
 			}
 		}
