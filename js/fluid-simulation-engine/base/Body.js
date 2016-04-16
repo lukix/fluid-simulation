@@ -3,7 +3,7 @@ define(
 		 '../geometry/Polygon'
 		,'../geometry/LineSegment'
 		,'../geometry/Vector'
-		,'./inheritFrom'
+		,'../others/inheritFrom'
 		,'../base/Particle'
 	], function (Polygon, LineSegment, Vector, inheritFrom, Particle) {
 	Body.inheritFrom = inheritFrom;
