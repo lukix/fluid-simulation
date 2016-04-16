@@ -5,14 +5,14 @@ define(['jquery', '../../fluid-simulation-engine/geometry/Vector'], function ($,
 		world.addRepulsiveForceSource(repulsor);
 		var mouseDown = false;
 		$('#canvas').mousedown(function (e) {
-			if(e.button != 0)
+			if(e.button !== 0)
 				return;
 			mouseDown = true;
 			repulsor.strength = REPULSOR_STRENGTH;
 			changeRepulsorCoords(e);
 		});
 		$('#canvas').mouseup(function (e) {
-			if(e.button != 0)
+			if(e.button !== 0)
 				return;
 			mouseDown = false;
 			repulsor.strength = 0;

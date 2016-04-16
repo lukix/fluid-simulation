@@ -64,7 +64,7 @@ define(['./LineSegment', './Vector'], function (LineSegment, Vector) {
 		var ray = new LineSegment(outsidePoint, relativePoint);
 		var intersections = 0;
 		for(var i = 0; i < this.sides.length; i++) {
-			if(ray.crossingPoint(this.sides[i]) != null) {
+			if(ray.crossingPoint(this.sides[i]) !== null) {
 				intersections++;
 			}
 		}
@@ -117,7 +117,7 @@ define(['./LineSegment', './Vector'], function (LineSegment, Vector) {
 		var closestSideIndex = i;
 		for(; i < this.sides.length; i++) {
 			ep = this.sides[i].getProjectedPoint(relativePoint);
-			if(ep != null) {
+			if(ep !== null) {
 				if(ep.getDistance(relativePoint) < minDistance) {
 					minDistance = ep.getDistance(relativePoint);
 					closestSideIndex = i;

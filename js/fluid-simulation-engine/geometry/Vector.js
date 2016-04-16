@@ -41,7 +41,7 @@ define(function () {
 	}
 	Vector.prototype.multiplyBy = function(n) {
 		var length = this.getLength();
-		if(length != 0) {
+		if(length !== 0) {
 			var newLength = n*length;
 			var sin = this.y / length;
 			var cos = this.x / length;

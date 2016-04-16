@@ -3,13 +3,13 @@ define(['jquery'], function ($) {
 		var mouseDown = false;
 		var mouseLastCoords = {x: null, y: null};
 		$('#canvas').mousedown(function (e) {
-			if(e.button != 1)
+			if(e.button !== 1)
 				return;
 			mouseDown = true;
 			updateLastCoords(e);
 		});
 		$('#canvas').mouseup(function (e) {
-			if(e.button != 1)
+			if(e.button !== 1)
 				return;
 			move(e);
 			mouseDown = false;

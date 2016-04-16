@@ -25,7 +25,7 @@ define(['./Vector'], function (Vector) {
 		}
 		var k = 1;
 		for(var i in eq) {
-			if(eq[i] != 0) {
+			if(eq[i] !== 0) {
 				k = eq[i];
 				break;
 			}

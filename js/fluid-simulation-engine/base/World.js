@@ -193,7 +193,7 @@ define(
 		for(var i = 0; i < this.repulsiveForceSources.length; i++) {
 			for(var j = 0; j < this.particles.length; j++) {
 				var r = this.particles[j].getDistance(this.repulsiveForceSources[i]);
-				if(r != 0) {
+				if(r !== 0) {
 					var F = this.repulsiveForceSources[i].strength / (r * r);
 					F = F > maxF ? maxF : F;
 

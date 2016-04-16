@@ -154,7 +154,7 @@ define([
 
 		for(var i = 0; i < obj.sides.length; i++) {
 			var projectedPoint;
-			if((projectedPoint = obj.sides[i].getProjectedPoint(relativePoint)) != null) {
+			if((projectedPoint = obj.sides[i].getProjectedPoint(relativePoint)) !== null) {
 				//Push vector
 				var line = new LineSegment(relativePoint, projectedPoint);
 				var vec = line.getUnitVector().multiplyBy(line.getLength());
