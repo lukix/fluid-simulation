@@ -40,7 +40,7 @@ define(
       		mouseCameraMove(this.ctx, this.TRANSFORM);
       		mouseCameraZoom(this.ctx, this.TRANSFORM);
           */
-          mouseCameraMove(this.ctx, this.TRANSFORM, this.camera);
+          mouseCameraMove(this.camera);
 
           var THIS = this;
       		$(window).resize(function () {
