@@ -30,9 +30,7 @@ define(
           //this.camera.rotation.z = 180 * Math.PI / 180;
 
           this.addToScene();
-          /*
-      		mouseRepulsor(world, this.TRANSFORM);
-          */
+      		mouseRepulsor(world, this.camera);
           mouseCameraMove(this.camera);
           mouseCameraZoom(this.camera);
           cameraSmartPoint(this.camera, world.bodies);
@@ -86,10 +84,6 @@ define(
           var bodyGeom = new THREE.ShapeGeometry(shapes);
           var bodyMesh = new THREE.Mesh(bodyGeom, new THREE.MeshBasicMaterial({color: 0xcccccc})) ;
           this.scene.add(bodyMesh);
-
-          var ambientLight = new THREE.AmbientLight(0x0c0c0c);
-          this.scene.add(ambientLight);
-          //*/
         },
         render: function () {
           //console.log(this.geometry.vertices.length);
