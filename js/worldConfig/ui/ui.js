@@ -28,28 +28,22 @@ define(
 
           this.camera.rotation.x = 180 * Math.PI / 180;
           //this.camera.rotation.z = 180 * Math.PI / 180;
-          this.camera.position.x = 750;
-          this.camera.position.y = 550;
-          this.camera.position.z = 550;
-          this.camera.zoom = 0.5;
-          this.camera.updateProjectionMatrix();
-          this.addToScene();
 
-      		//onresize(this.myCanvas);
+          this.addToScene();
           /*
-          cameraSmartPoint(this.ctx, this.TRANSFORM, this.myCanvas, world.bodies);
       		mouseRepulsor(world, this.TRANSFORM);
-      		mouseCameraMove(this.ctx, this.TRANSFORM);
-      		mouseCameraZoom(this.ctx, this.TRANSFORM);
           */
           mouseCameraMove(this.camera);
           mouseCameraZoom(this.camera);
+          cameraSmartPoint(this.camera, world.bodies);
 
           var THIS = this;
       		$(window).resize(function () {
-            THIS.camera.aspect = $(myCanvas).width() / $(myCanvas).height();
+            THIS.camera.left = -$(myCanvas).width()/2;
+            THIS.camera.right = $(myCanvas).width()/2;
+            THIS.camera.top = -$(myCanvas).height()/2;
+            THIS.camera.bottom = $(myCanvas).height()/2;
             THIS.camera.updateProjectionMatrix();
-            //onresize(THIS.myCanvas);
           });
       		$('#gravityChangerButton').click(function () {
       			buttons.changeGravity(world);
@@ -57,12 +51,6 @@ define(
       		$('#show').click(function () {
       			$('#rest').slideToggle();
       		});
-
-          function onresize (myCanvas) {
-            myCanvas.width = $(myCanvas).width();
-            myCanvas.height = $(myCanvas).height();
-          }
-
         },
         addToScene: function() {
           //Particles:
