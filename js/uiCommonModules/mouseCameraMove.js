@@ -21,7 +21,7 @@ define(['jquery'], function ($) {
 			}
 		});
 		function move(e) {
-			const k = 1.78;
+			const k = 1.0;
 			var dx = e.pageX - mouseLastCoords.x;
 			var dy = e.pageY - mouseLastCoords.y;
 

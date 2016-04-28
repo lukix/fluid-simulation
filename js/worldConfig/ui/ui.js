@@ -24,13 +24,15 @@ define(
           this.renderer = new THREE.WebGLRenderer({canvas: myCanvas});//antialiasing: true
           this.renderer.setPixelRatio(2.0);
           this.scene = new THREE.Scene();
-          this.camera = new THREE.PerspectiveCamera(90, $(myCanvas).width()/$(myCanvas).height(), 0.1, 1000);
+          this.camera = new THREE.OrthographicCamera(-$(myCanvas).width()/2, $(myCanvas).width()/2, -$(myCanvas).height()/2, $(myCanvas).height()/2, -1000, 1000);
 
+          this.camera.rotation.x = 180 * Math.PI / 180;
           //this.camera.rotation.z = 180 * Math.PI / 180;
           this.camera.position.x = 750;
           this.camera.position.y = 550;
           this.camera.position.z = 550;
-
+          this.camera.zoom = 0.5;
+          this.camera.updateProjectionMatrix();
           this.addToScene();
 
       		//onresize(this.myCanvas);
@@ -82,6 +84,7 @@ define(
 
           //Bodies:
           //*
+          var shapes = [];
           for(var i = 0; i < world.bodies.length; i++) {
             var bodyShape = new THREE.Shape();
             var start = world.bodies[i].coords;
@@ -90,10 +93,14 @@ define(
               var p2 = world.bodies[i].sides[j].p2;
               bodyShape.lineTo(start.x+p2.x, start.y+p2.y);
             }
-            var bodyGeom = new THREE.ShapeGeometry(bodyShape);
-            var bodyMesh = new THREE.Mesh(bodyGeom, new THREE.MeshBasicMaterial({color: 0xcccccc})) ;
-            this.scene.add(bodyMesh);
+            shapes.push(bodyShape);
           }
+          var bodyGeom = new THREE.ShapeGeometry(shapes);
+          var bodyMesh = new THREE.Mesh(bodyGeom, new THREE.MeshBasicMaterial({color: 0xcccccc})) ;
+          this.scene.add(bodyMesh);
+
+          var ambientLight = new THREE.AmbientLight(0x0c0c0c);
+          this.scene.add(ambientLight);
           //*/
         },
         render: function () {
