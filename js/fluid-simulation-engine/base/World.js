@@ -7,7 +7,7 @@ define(
 		,'../geometry/Polygon'
 	], function (Grid, BodiesGrid, Vector, LineSegment, Polygon) {
 	function World() {
-		this.gravity = new Vector(0.0, 0.5);
+		this.gravity = new Vector(0.0, -0.5);
 		this.timeSpeed = 1.0/60;
 		this.coeffs = {
 			 h: 40	//Particles' interacting distance
@@ -64,7 +64,7 @@ define(
 				particlesArr.push(
 					new particleClass(
 						 startX + (x + (y % 2)/2) * this.coeffs.h * space
-						,startY + y * this.coeffs.h * space
+						,startY - y * this.coeffs.h * space
 					)
 				);
 			}

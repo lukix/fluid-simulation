@@ -9,9 +9,6 @@ define(
   ], function ($, buttons, mouseRepulsor, mouseCameraMove, mouseCameraZoom, cameraSmartPoint) {
     return function (world) {
       return {
-        ctx: null,
-        myCanvas: null,
-        TRANSFORM: {x: 0, y: 0, scale_x: 1, scale_y: 1},
         renderer: null,
         scene: null,
         camera: null,
@@ -19,15 +16,13 @@ define(
         particlesSystem: null,
         init: function () {
           var myCanvas = document.getElementById('canvas');
-          this.myCanvas = myCanvas;
 
-          this.renderer = new THREE.WebGLRenderer({canvas: myCanvas});//antialiasing: true
+          this.renderer = new THREE.WebGLRenderer({canvas: myCanvas});
           this.renderer.setPixelRatio(2.0);
           this.scene = new THREE.Scene();
           this.camera = new THREE.OrthographicCamera(-$(myCanvas).width()/2, $(myCanvas).width()/2, -$(myCanvas).height()/2, $(myCanvas).height()/2, -1000, 1000);
 
           this.camera.rotation.x = 180 * Math.PI / 180;
-          //this.camera.rotation.z = 180 * Math.PI / 180;
 
           this.addToScene();
       		mouseRepulsor(world, this.camera);
@@ -54,22 +49,18 @@ define(
           //Particles:
           this.geometry = new THREE.Geometry();
           for (i = 0; i < world.particles.length; i++) {
-            var vertex = new THREE.Vector3();
-            vertex.x = 0;
-            vertex.y = 0;
-            vertex.z = 0;
+            var vertex = new THREE.Vector3(0, 0, 0);
             this.geometry.vertices.push(vertex);
           }
           this.geometry.colors = [];
           for( var i = 0; i < this.geometry.vertices.length; i++ )
-              this.geometry.colors[i] = new THREE.Color(0x4444ff);
+              this.geometry.colors[i] = new THREE.Color(world.particles[i].color);
 
           var material = new THREE.PointsMaterial({size: 2, vertexColors: THREE.VertexColors, fog: false, sizeAttenuation: false});
           this.particlesSystem = new THREE.Points(this.geometry, material);
           this.scene.add(this.particlesSystem);
 
           //Bodies:
-          //*
           var shapes = [];
           for(var i = 0; i < world.bodies.length; i++) {
             var bodyShape = new THREE.Shape();
@@ -85,18 +76,17 @@ define(
           var bodyMesh = new THREE.Mesh(bodyGeom, new THREE.MeshBasicMaterial({color: 0xcccccc})) ;
           this.scene.add(bodyMesh);
         },
-        render: function () {
-          //console.log(this.geometry.vertices.length);
-          //console.log(world.particles[0].coords.x);
-          for(var i = 0; i < world.particles.length; i++) {
+        updateVertices: function () {
+          for(var i = 0; i < this.geometry.vertices.length; i++) {
             this.geometry.vertices[i].x = world.particles[i].coords.x;
             this.geometry.vertices[i].y = world.particles[i].coords.y;
-            //this.geometry.colors[i] =
           }
           this.particlesSystem.geometry.verticesNeedUpdate = true;
+        },
+        render: function () {
+          this.updateVertices();
           this.renderer.render(this.scene, this.camera);
         }
-
       }
     }
 });

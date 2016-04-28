@@ -27,12 +27,12 @@ define(
 
 		var lolWall = [
 			 new Vector(0, 0)
+			,new Vector(550, 0)
+			,new Vector(550, 100)
+			,new Vector(500, 100)
+			,new Vector(500, 50)
 			,new Vector(0, 50)
-			,new Vector(550, 50)
-			,new Vector(550, -50)
-			,new Vector(500, -50)
-			,new Vector(500, 0)
 		];
-		world.addBody(new Body(lolWall).setCoords(new Vector(0, 850)));
+		world.addBody(new Body(lolWall).setCoords(new Vector(0, 200)));
 	};
 });
