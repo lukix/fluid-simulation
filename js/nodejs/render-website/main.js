@@ -12,22 +12,25 @@ require(
 	], function($, fileHandling, mouseCameraMove, mouseCameraZoom) {
 
 		var myCanvas = document.getElementById('canvas');
-		myCanvas.width = $(myCanvas).width();
-		myCanvas.height = $(myCanvas).height();
-		var ctx = myCanvas.getContext('2d');
-		var TRANSFORM = {x: 0, y: 0, scale_x: 1, scale_y: 1};
-		ctx.setTransform(TRANSFORM.scale_x, 0, 0, TRANSFORM.scale_y, TRANSFORM.x, TRANSFORM.y);
+		var renderer = new THREE.WebGLRenderer({canvas: myCanvas});
+		renderer.setPixelRatio(2.0);
+		var camera = new THREE.OrthographicCamera(-$(myCanvas).width()/2, $(myCanvas).width()/2, -$(myCanvas).height()/2, $(myCanvas).height()/2, -1000, 1000);
 
+		camera.rotation.x = 180 * Math.PI / 180;
+
+		var THIS = this;
 		$(window).resize(function () {
-			myCanvas.width = $(myCanvas).width();
-			myCanvas.height = $(myCanvas).height();
-			ctx.setTransform(TRANSFORM.scale_x, 0, 0, TRANSFORM.scale_y, TRANSFORM.x, TRANSFORM.y);
+			camera.left = -$(myCanvas).width()/2;
+			camera.right = $(myCanvas).width()/2;
+			camera.top = -$(myCanvas).height()/2;
+			camera.bottom = $(myCanvas).height()/2;
+			camera.updateProjectionMatrix();
 		});
 
-		if(!fileHandling(ctx, myCanvas, TRANSFORM))
+		if(!fileHandling(renderer, camera))
 			console.log("Your browser doesn't support file API");
 
-		mouseCameraMove(ctx, TRANSFORM);
-		mouseCameraZoom(ctx, TRANSFORM);
+		mouseCameraMove(camera);
+		mouseCameraZoom(camera);
 	}
 );

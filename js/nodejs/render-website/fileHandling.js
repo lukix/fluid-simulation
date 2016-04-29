@@ -6,7 +6,7 @@ define(
     ,'../../uiCommonModules/cameraSmartPoint'
     ,'./mainLoop'
   ], function (DataProvider, Polygon, Vector, cameraSmartPoint, mainLoop) {
-	return function(ctx, myCanvas, TRANSFORM) {
+	return function(renderer,camera) {
     var dataProvider;
 		var isReady = false;
 		if(!(window.File && window.FileReader && window.FileList && window.Blob))
@@ -21,7 +21,7 @@ define(
 		$('#filePanel>div').click(function () {
 			if(isReady) {
 				$('#filePanel').fadeOut();
-				mainLoop(dataProvider, ctx, myCanvas, function () {
+				mainLoop(dataProvider, camera, renderer, function () {
 					$('#filePanel').fadeIn();
 					setReadiness(false, dataProvider.file.name);
 					dataProvider = new DataProvider(dataProvider.file, onDataProviderReady);
@@ -34,7 +34,7 @@ define(
       for(var i = 0; i < dataProvider.simulationData.frames[0].bodies.length; i++) {
         polygons.push(new Polygon(dataProvider.simulationData.frames[0].bodies[i]));
       }
-      cameraSmartPoint(ctx, TRANSFORM, myCanvas, polygons);
+      cameraSmartPoint(camera, polygons);
 		}
 		function setReadiness(ready, fileName) {
 			if(ready) {
