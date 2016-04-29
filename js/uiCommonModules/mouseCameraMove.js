@@ -1,5 +1,5 @@
 define(['jquery'], function ($) {
-	return function (ctx, TRANSFORM) {
+	return function (camera) {
 		var mouseDown = false;
 		var mouseLastCoords = {x: null, y: null};
 		$('#canvas').mousedown(function (e) {
@@ -21,11 +21,12 @@ define(['jquery'], function ($) {
 			}
 		});
 		function move(e) {
+			const k = 1.0;
 			var dx = e.pageX - mouseLastCoords.x;
 			var dy = e.pageY - mouseLastCoords.y;
-			TRANSFORM.x += dx;
-			TRANSFORM.y += dy;
-			ctx.setTransform(TRANSFORM.scale_x, 0, 0, TRANSFORM.scale_y, TRANSFORM.x, TRANSFORM.y);
+
+			camera.position.x -= dx * k / camera.zoom;
+			camera.position.y += dy * k / camera.zoom;
 		}
 		function updateLastCoords(e) {
 			mouseLastCoords.x = e.pageX;

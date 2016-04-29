@@ -10,7 +10,7 @@ define(
 	return function () {
     var world = new World();
     addBodies(world);
-    world.addParticlesGrid(25, 40, 130, 130, WaterParticle);  //rows, cols, x, y, type
+    world.addParticlesGrid(25, 40, 130, 990, WaterParticle);  //rows, cols, x, y, type
 
     (function (world) {
       var minPoint = world.getBodiesMinPoint();
