@@ -50,8 +50,10 @@ define(
 		return this;
 	}
 	World.prototype.addParticles = function (particles) {
-		if(Array.isArray(particles))
-			this.particles.push.apply(this.particles, particles);
+		if(Array.isArray(particles)) {
+			for(var i = 0; i < particles.length; i++)
+				this.particles.push(particles[i]);
+		}
 		else
 			this.particles.push(particles);
 		return this;
