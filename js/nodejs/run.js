@@ -31,8 +31,8 @@ requirejs(
       }
 
   		var world = new World();
-  		world.addParticlesGrid(config.particles_in_row, (config.particles_number/2)/config.particles_in_row, 200, -500, Particle);
-  		world.addParticlesGrid(config.particles_in_row, (config.particles_number/2)/config.particles_in_row, 900, -500, WaterParticle);
+      world.setTimeSpeed(3/60);
+  		world.addParticlesGrid(config.particles_in_row, (config.particles_number/2)/config.particles_in_row, 200, 500, WaterParticle);
   		addBodies(world);
 
   		var time = new Date().getTime();

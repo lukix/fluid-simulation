@@ -1,8 +1,8 @@
 {
-	 "particles_number": 3000
-	,"particles_in_row": 25
+	 "particles_number": 13000
+	,"particles_in_row": 100
 	,"frame_time": 30
-	,"steps_per_frame": 1
-	,"recording_time": 20000
+	,"steps_per_frame": 5
+	,"recording_time": 40000
 	,"file_name": "./simulations-files/sample-simulation"
 }
