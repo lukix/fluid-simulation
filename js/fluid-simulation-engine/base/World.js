@@ -14,7 +14,7 @@ define(
 		};
 		this.particles = [];
 		this.bodies = [];
-		this.repulsiveForceSources = [];	//{coords: Vector, strength: number}
+		this.repulsiveForceSources = [];	//{coords: Vector, strength: number, isActive: bool}
 		this.grid = new Grid(this.particles, this.coeffs.h);
 		this.bodiesGrid = new BodiesGrid(this.bodies, 35);
 		this.respawnCoords;
@@ -193,15 +193,17 @@ define(
 	World.prototype.applyRepulsiveForces = function () {
 		const maxF = 20;
 		for(var i = 0; i < this.repulsiveForceSources.length; i++) {
-			for(var j = 0; j < this.particles.length; j++) {
-				var r = this.particles[j].getDistance(this.repulsiveForceSources[i]);
-				if(r !== 0) {
-					var F = this.repulsiveForceSources[i].strength / (r * r);
-					F = F > maxF ? maxF : F;
+			if(this.repulsiveForceSources[i].isActive) {
+				for(var j = 0; j < this.particles.length; j++) {
+					var r = this.particles[j].getDistance(this.repulsiveForceSources[i]);
+					if(r !== 0) {
+						var F = this.repulsiveForceSources[i].strength / (r * r);
+						F = F > maxF ? maxF : F;
 
-					var Fx = F * (this.repulsiveForceSources[i].coords.x - this.particles[j].coords.x) / r;
-					var Fy = F * (this.repulsiveForceSources[i].coords.y - this.particles[j].coords.y) / r;
-					this.particles[j].applyForce(-Fx, -Fy);
+						var Fx = F * (this.repulsiveForceSources[i].coords.x - this.particles[j].coords.x) / r;
+						var Fy = F * (this.repulsiveForceSources[i].coords.y - this.particles[j].coords.y) / r;
+						this.particles[j].applyForce(-Fx, -Fy);
+					}
 				}
 			}
 		}
