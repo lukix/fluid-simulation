@@ -1,5 +1,7 @@
 define(['jquery'], function ($) {
 	var lastDts = new Array(15);
+	var lis = document.getElementById("fps").children;
+
 	function loop(world, dt) {
 		lastDts.push(dt);
 		lastDts.shift();
@@ -7,18 +9,15 @@ define(['jquery'], function ($) {
 		var avgDts = getAvgVal(lastDts);
 		var avgFps = 1000/avgDts;
 
-		updateDOM({
-			 fps: {value: avgFps, text: "fps"}
-			,particlesNumber: {value: world.particles.length, text: "particles"}
-		});
+		updateDOM([
+			 {value: avgFps, text: "fps"}
+			,{value: world.particles.length, text: "particles"}
+		]);
 
 	}
 	function updateDOM(data) {
-		$('#fps').empty();
-		for(var i in data) {
-				$('#fps').append(
-					$('<li>').html(data[i].value.toFixed(0) + ' ' + data[i].text)
-				);
+		for(var i = 0; i < data.length && i < lis.length; i++) {
+			lis[i].innerHTML = data[i].value.toFixed(0) + ' ' + data[i].text;
 		}
 	}
 	function getAvgVal(arr) {
