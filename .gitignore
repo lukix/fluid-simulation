@@ -41,3 +41,9 @@ $RECYCLE.BIN/
 Network Trash Folder
 Temporary Items
 .apdisk
+
+# npm modules
+js/nodejs/node_modules/
+
+# simulations files
+js/nodejs/simulations-files/
