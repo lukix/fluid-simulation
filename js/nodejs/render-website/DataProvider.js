@@ -53,6 +53,8 @@ define(['../../fluid-simulation-engine/geometry/Vector'], function (Vector) {
 						 particles: []
 						,bodies: []
 					};
+
+					//Bodies
 					var bodiesPieceSize = (THIS.nextFrameSize - THIS.nextFrameParticlesNumber * 3 * 4 - 2 * 4) / 4;
 					var piecesRead = 0;
 					while(piecesRead < bodiesPieceSize) {
@@ -68,14 +70,16 @@ define(['../../fluid-simulation-engine/geometry/Vector'], function (Vector) {
 						}
 						frame.bodies.push(body);
 					}
-					var a = true;
+
+					//Particles
 					for(var i = 0; i < THIS.nextFrameParticlesNumber; i++) {
 						frame.particles.push({
 							 x: float32View[bodiesPieceSize + i*3+0]
 							,y: float32View[bodiesPieceSize + i*3+1]
-							,color: "#"+DataProvider.decimalToHex(uint32View[bodiesPieceSize + i*3+2], 6)
+							,color: uint32View[bodiesPieceSize + i*3+2]
 						});
 					}
+
 					THIS.simulationData.frames.unshift(frame);
 					THIS.nextFrameSize = uint32View[buffer.byteLength/4-2];
 					THIS.nextFrameParticlesNumber = uint32View[buffer.byteLength/4-1];
@@ -91,14 +95,6 @@ define(['../../fluid-simulation-engine/geometry/Vector'], function (Vector) {
 		DataProvider.prototype.readNextSlice = function (reader, size) {
 			reader.readAsArrayBuffer(this.file.slice(this.bytesRead, this.bytesRead+size));
 			this.bytesRead += size;
-		}
-		DataProvider.decimalToHex = function(d, padding) {
-		    var hex = Number(d).toString(16);
-		    padding = typeof (padding) === "undefined" || padding === null ? padding = 6 : padding;
-		    while (hex.length < padding) {
-		        hex = "0" + hex;
-		    }
-		    return hex;
 		}
 		return DataProvider;
 });
