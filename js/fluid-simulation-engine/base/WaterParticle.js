@@ -2,7 +2,7 @@ define(['./Particle', '../geometry/Vector', '../others/inheritFrom'], function (
 	WaterParticle.inheritFrom = inheritFrom;
 	function WaterParticle(x, y) {
 		this.coords = new Vector(x, y);
-		this.color = "#44f";
+		this.color = "#88f";
 		this.init();
 		this.coeffs = WaterParticle.coeffs;
 	}

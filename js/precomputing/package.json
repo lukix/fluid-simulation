@@ -4,7 +4,7 @@
   "description": "",
   "main": "run.js",
   "scripts": {
-    "test": "node run.js simulation-config.json"
+    "start": "node run.js simulation-config.json"
   },
   "author": "Łukasz Jenczmyk",
   "license": "ISC",
